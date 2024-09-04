@@ -6,3 +6,5 @@
 *.db
 
 *_symlink
+
+__pycache__/
