@@ -12,7 +12,7 @@ class UserResponse(UserBase):
   created_at: datetime
 
   class Config:
-    orm_mode = True
+    from_attributes = True
 
 class MessageBase(BaseModel):
   content: str
@@ -26,11 +26,11 @@ class MessageResponse(MessageBase):
   sender_id: int
 
   class Config:
-    orm_mode = True
+    from_attributes = True
 
 class Token(BaseModel):
   access_token: str
   refresh_token: str
 
   class Config:
-    orm_mode = True
+    from_attributes = True

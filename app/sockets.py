@@ -2,27 +2,29 @@ import socketio
 from fastapi import HTTPException, status
 from sqlalchemy.orm import Session
 from .database import get_session_db
-from .crud import get_user_by_username, create_message
+from .crud import create_message
+from .auth import verify_token
 from .schemas import MessageCreate, MessageResponse
 
-sio = socketio.AsyncServer(async_mode='asgi')
-
-socket_app = socketio.ASGIApp(sio)
+sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins='*')
 
 @sio.event
-async def connect(sid, environ, auth):
-  db: Session = next(get_session_db())
+async def connect(sid, environ):
+    query_string = environ.get('QUERY_STRING', '')
+    query_params = dict(x.split('=') for x in query_string.split('&'))
+    token = query_params.get('auth_token')
 
-  token = auth.get('token')
-  if not token:
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token missing")
+    if not token:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Token missing")
 
-  user = get_user_by_username(db, token)  # Предполагается, что token это username (для простоты тестового задания)
-  if not user:
-    raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+    db: Session = next(get_session_db())
 
-  print(f"User {user.username} connected with session id {sid}")
-  await sio.save_session(sid, {'user_id': user.id, 'username': user.username})
+    user = verify_token(db, token)
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+
+    print(f"User {user.username} connected with session id {sid}")
+    await sio.save_session(sid, {'user_id': user.id, 'username': user.username})
 
 @sio.event
 async def disconnect(sid):
