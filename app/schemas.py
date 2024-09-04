@@ -27,3 +27,10 @@ class MessageResponse(MessageBase):
 
   class Config:
     orm_mode = True
+
+class Token(BaseModel):
+  access_token: str
+  refresh_token: str
+
+  class Config:
+    orm_mode = True
