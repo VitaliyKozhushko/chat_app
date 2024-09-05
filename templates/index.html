@@ -45,10 +45,10 @@
                 messagesDiv.innerHTML += "<p>Connected to WebSocket</p>";
             });
 
-            socket.on("message", (data) => {
+            socket.on("new_message", (data) => {
                 console.log("Message from server:", data);
                 const messagesDiv = document.getElementById('messages');
-                messagesDiv.innerHTML += `<p>Server: ${data.data}</p>`;
+                messagesDiv.innerHTML += `<p>Server: ${JSON.parse(data).content}</p>`;
             });
 
             socket.on("disconnect", () => {
