@@ -46,8 +46,8 @@ async def send_message(sid, data):
     raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Invalid message data")
 
   message = create_message(db, message_data, user_id)
-
   room = data.get('room_id')
+
   response = MessageResponse(
     id=message.id,
     content=message.content,
@@ -58,16 +58,24 @@ async def send_message(sid, data):
   await sio.emit('new_message', response.model_dump_json(), room=room)
   print(f"User {username} sent message to room {room}")
 
-
 @sio.event
 async def join_room(sid, data):
   room = data['room']
   await sio.enter_room(sid, room)
   print(f"Session {sid} joined room {room}")
 
-
 @sio.event
 async def leave_room(sid, data):
   room = data['room']
   await sio.leave_room(sid, room)
   print(f"Session {sid} left room {room}")
+
+@sio.event
+async def join_room(sid, room_id):
+    await sio.enter_room(sid, room_id)
+    print(f"User {sid} joined room {room_id}")
+
+@sio.event
+async def leave_room(sid, room_id):
+    await sio.leave_room(sid, room_id)
+    print(f"User {sid} left room {room_id}")

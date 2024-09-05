@@ -35,8 +35,26 @@ def create_room(db: Session, name: str):
   db.refresh(db_room)
   return db_room
 
+def get_room_by_id(db: Session, id: int):
+  return db.query(models.Room).get(models.Room.id == id)
+
 def get_room_by_name(db: Session, name: str):
   return db.query(models.Room).filter(models.Room.name == name).first()
 
 def get_all_rooms(db: Session):
   return db.query(models.Room).all()
+
+def add_user_to_room(db: Session, room_id: int, user_id: int):
+    db_room_user = models.RoomUser(user_id=user_id, room_id=room_id)
+    db.add(db_room_user)
+    db.commit()
+    db.refresh(db_room_user)
+    return db_room_user
+
+
+def remove_user_from_room(db: Session, room_id: int, user_id: int):
+  db_room_user = db.query(models.RoomUser).filter(models.RoomUser.user_id == user_id, models.RoomUser.room_id == room_id).first()
+  if db_room_user:
+    db.delete(db_room_user)
+    db.commit()
+  return db_room_user

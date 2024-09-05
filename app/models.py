@@ -38,7 +38,7 @@ class RoomUser(Base):
 
   id = Column(Integer, primary_key=True, index=True)
   user_id = Column(Integer, ForeignKey('user.id'))
-  rooms_id = Column(Integer, ForeignKey('room.id'))
+  room_id = Column(Integer, ForeignKey('room.id'))
 
   user = relationship('User', back_populates='rooms')
   room = relationship('Room', back_populates='users')
