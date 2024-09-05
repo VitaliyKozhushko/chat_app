@@ -34,3 +34,15 @@ class Token(BaseModel):
 
   class Config:
     from_attributes = True
+
+class RoomBase(BaseModel):
+  name: str
+
+class RoomCreate(RoomBase):
+  pass
+
+class RoomResponse(RoomBase):
+  id: int
+
+  class Config:
+    from_attributes = True

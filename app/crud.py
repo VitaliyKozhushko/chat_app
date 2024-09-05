@@ -27,3 +27,16 @@ def create_message(db:Session, message: schemas.MessageCreate, user_id: int):
 
 def get_messages(db: Session, skip: int = 0, limit: int = 10):
   return db.query(models.Message).offset(skip).limit(limit).all()
+
+def create_room(db: Session, name: str):
+  db_room = models.Room(name=name)
+  db.add(db_room)
+  db.commit()
+  db.refresh(db_room)
+  return db_room
+
+def get_room_by_name(db: Session, name: str):
+  return db.query(models.Room).filter(models.Room.name == name).first()
+
+def get_all_rooms(db: Session):
+  return db.query(models.Room).all()
