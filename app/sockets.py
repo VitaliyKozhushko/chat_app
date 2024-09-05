@@ -32,7 +32,6 @@ async def disconnect(sid):
   username = session.get('username')
   print(f"User {username} disconnected")
 
-
 @sio.event
 async def send_message(sid, data):
   session = await sio.get_session(sid)
@@ -56,7 +55,7 @@ async def send_message(sid, data):
     sender_id=message.sender_id
   )
 
-  await sio.emit('new_message', response.dict(), room=room)
+  await sio.emit('new_message', response.model_dump_json(), room=room)
   print(f"User {username} sent message to room {room}")
 
 

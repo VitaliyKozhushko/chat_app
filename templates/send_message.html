@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat Application</title>
+    <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
+</head>
+<body>
+    <h1>Chat Application</h1>
+
+    <div>
+        <h2>Send Message</h2>
+        <form id="message-form">
+            <input type="text" id="message-input" placeholder="Type a message" required>
+            <button type="submit">Send</button>
+        </form>
+    </div>
+
+    <div>
+        <h2>Messages</h2>
+        <div id="messages"></div>
+    </div>
+
+    <script>
+        let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aXRhbGl5IiwiZXhwIjoxNzI1NTUzMjUxfQ.rZrjemXJZHssyWNwm-_9gMmhmuYynQGTkF4Kd1-3Qg4'
+        socket = io("http://localhost:8000/", {
+                query: {
+                    auth_token: token
+                },
+                transports: ["websocket"]
+            });
+
+        // Function to handle form submission
+        document.getElementById('message-form').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const messageInput = document.getElementById('message-input');
+            const message = messageInput.value;
+
+            // Send message to the server
+            socket.emit('send_message', { content: message });
+
+            // Clear the input field
+            messageInput.value = '';
+        });
+
+        // Listen for incoming messages
+        socket.on('new_message', function(data) {
+            console.log(JSON.parse(data))
+            response = JSON.parse(data)
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML += `<p>${response.content}</p>`;
+        });
+    </script>
+</body>
+</html>
