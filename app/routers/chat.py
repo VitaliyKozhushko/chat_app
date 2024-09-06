@@ -4,10 +4,9 @@ from fastapi.templating import Jinja2Templates
 from sqlalchemy.orm import Session
 from typing import List
 from app.database import get_session_db
-from app.schemas import MessageResponse, MessageCreate, RoomResponse, RoomCreate
+from app.schemas import MessageResponse, RoomResponse, RoomCreate
 from app.auth import get_current_user
 from app.crud import (get_user,
-                      create_message,
                       get_messages,
                       get_room_by_name,
                       create_new_room,

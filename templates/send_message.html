@@ -8,6 +8,7 @@
 </head>
 <body>
     <a href="/">Главная</a>
+    <button id="leave-room" type="button">Покинуть комнату</button>
     <h1 id="title-room" data-room-id="{{room.id}}">Комната {{room.name}}</h1>
 
     <div>
@@ -29,13 +30,17 @@
 
     <script>
         const access_token = sessionStorage.getItem('authToken');
+        let userId = sessionStorage.getItem('user') || null;
         const roomId = document.getElementById('title-room').getAttribute('data-room-id')
+        let username;
         socket = io("http://localhost:8000/", {
                 query: {
                     auth_token: access_token
                 },
                 transports: ["websocket"]
             });
+
+        document.getElementById('leave-room').addEventListener('click', leaveChat)
 
         document.getElementById('message-form').addEventListener('submit', function(event) {
             event.preventDefault();
@@ -49,13 +54,27 @@
 
         socket.on('connect', function() {
             console.log('Connected to server');
-            socket.emit('join_room', roomId);
+            socket.emit('join_room', roomId, userId);
         });
 
         socket.on('new_message', function(data) {
             response = JSON.parse(data)
             const messagesDiv = document.getElementById('messages');
             messagesDiv.innerHTML += `<div style="display: flex; align-items: center;"><p><strong style="margin-right: 7px;">${response.username}:</strong>${response.content}</p></div>`;
+        });
+
+        function leaveChat(e) {
+          socket.emit('disconnect_room', { user_id: userId, room_id: roomId });
+          window.location.href = '/'
+        }
+
+        socket.on('user_joined', function(data) {
+            username = data.username
+            console.log(`User ${data.username} was added to room`);
+        });
+
+        socket.on('user_left', function(data) {
+            console.log(`User ${data.username} left room`);
         });
     </script>
 </body>

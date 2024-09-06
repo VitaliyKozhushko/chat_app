@@ -60,10 +60,28 @@ async def send_message(sid, data):
   print(f"User {username} sent message to room {room_id}")
 
 @sio.event
-async def leave_room(sid, data):
-  room = data['room']
-  await sio.leave_room(sid, room)
-  print(f"Session {sid} left room {room}")
+async def disconnect_room(sid, data):
+  user_id = data.get('user_id')
+  room_id = data.get('room_id')
+
+  db: Session = next(get_session_db())
+
+  room = db.query(Room).filter(Room.id == room_id).first()
+  if not room:
+    return {"error": "Room not found"}
+
+  user = db.query(User).filter(User.id == user_id).first()
+  if not user:
+    return {"error": "User not found"}
+
+  if user in room.users:
+    room.users.remove(user)
+    db.commit()
+
+  await sio.leave_room(sid, room_id)
+  print(f"User {user_id} left room {room_id}")
+  await sio.emit('user_left', {'user_id': user_id, 'username': user.username}, room=room_id)
+
 
 @sio.event
 async def connect_room(sid, data):
@@ -84,17 +102,14 @@ async def connect_room(sid, data):
       room.users.append(user)
       db.commit()
 
-  await sio.enter_room(sid, room_id)
-  print(f"User {user_id} joined room {room_id}")
-
-  await sio.emit('user_joined', {'user_id': user_id, 'room_id': room_id}, room=room_id)
-
 @sio.event
-async def leave_room(sid, room_id):
-    await sio.leave_room(sid, room_id)
-    print(f"User {sid} left room {room_id}")
-
-@sio.event
-async def join_room(sid, room):
+async def join_room(sid, room, user_id):
+    db: Session = next(get_session_db())
+    user = db.query(User).filter(User.id == user_id).first()
     await sio.enter_room(sid, room)
+    await sio.emit(
+      'user_joined',
+      {'user_id': user_id, 'username': user.username},
+      room=room,
+    )
     print(f"Client {sid} joined room {room}")
