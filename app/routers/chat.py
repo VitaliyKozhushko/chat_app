@@ -6,7 +6,14 @@ from typing import List
 from app.database import get_session_db
 from app.schemas import MessageResponse, MessageCreate, RoomResponse, RoomCreate
 from app.auth import get_current_user
-from app.crud import get_user, create_message, get_messages, get_room_by_name, create_new_room, get_room_by_id, get_all_rooms
+from app.crud import (get_user,
+                      create_message,
+                      get_messages,
+                      get_room_by_name,
+                      create_new_room,
+                      get_room_by_id,
+                      get_all_rooms,
+                      get_room_messages)
 
 router = APIRouter()
 
@@ -14,24 +21,32 @@ templates = Jinja2Templates(directory='templates')
 
 @router.get("/chat/{room_id}-{user_id}", response_class=HTMLResponse)
 async def chat_room(request: Request, room_id: int, db: Session = Depends(get_session_db)):
-  room = get_room_by_id(db, id=room_id)
+  room = get_room_messages(db, id=room_id)
+  messages = room.messages
+  messages_data = [
+    {
+      "id": message.id,
+      "content": message.content,
+      "timestamp": message.timestamp.isoformat(),
+      "sender": message.sender.username
+    }
+    for message in messages
+  ]
+  print('messages_data:', room.messages)
   return templates.TemplateResponse(
-      request=request, name="send_message.html", context={"room": room}
+    "send_message.html",
+    {
+      "request": request,
+      "room": room,
+      "messages": messages_data
+    }
   )
 
 @router.get("/", response_class=HTMLResponse)
-async def chat_room(request: Request):
+async def main_page(request: Request):
   return templates.TemplateResponse(
       request=request, name="index.html"
   )
-
-@router.post('/messages', response_model=MessageResponse)
-async def send_message(message: MessageCreate, db: Session = Depends(get_session_db), token: str = Depends(get_current_user)):
-  user = get_user(db, user_id=token.id)
-  if not user:
-    raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail='Пользователь не найден')
-  new_message = create_message(db=db, message=message,user_id=user.id)
-  return new_message
 
 @router.get('/messages', response_model=List[MessageResponse])
 async def get_all_messages(db: Session = Depends(get_session_db), token: str = Depends(get_current_user)):

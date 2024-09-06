@@ -18,8 +18,12 @@ def create_user(db: Session, user: schemas.UserCreate):
   db.refresh(db_user)
   return db_user
 
-def create_message(db:Session, message: schemas.MessageCreate, user_id: int):
-  db_message = models.Message(content=message.content, sender_id=user_id)
+def create_message(db:Session, message: schemas.MessageCreate, user_id: int, room_id: int):
+  db_message = models.Message(
+    content=message.content,
+    sender_id=user_id,
+    room_id=room_id
+  )
   db.add(db_message)
   db.commit()
   db.refresh(db_message)
@@ -56,3 +60,8 @@ def remove_user_from_room(db: Session, room_id: int, user_id: int):
     db.delete(db_room_user)
     db.commit()
   return db_room_user
+
+def get_room_messages(db: Session, id: int):
+  return db.query(models.Room).filter(models.Room.id == id).options(
+    joinedload(models.Room.messages).joinedload(models.Message.sender)
+  ).first()

@@ -19,7 +19,7 @@ class MessageBase(BaseModel):
   content: str
 
 class MessageCreate(MessageBase):
-  pass
+  room_id: int
 
 class MessageResponse(MessageBase):
   id: int

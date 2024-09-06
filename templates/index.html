@@ -15,10 +15,15 @@
     <div id="rooms-user"></div>
     <div id="messages"></div>
 
-    <script>
+    <script type="module">
         let socket;
         let currentRoom = null;
-        let actual_user;
+        let access_token = sessionStorage.getItem('authToken') || null;
+        let actual_user = sessionStorage.getItem('user') || null;
+
+        if (!access_token) await getToken()
+
+        loadRooms()
 
         async function getToken() {
             const response = await fetch('http://localhost:8000/login', {
@@ -43,15 +48,11 @@
                     }
                 });
             }
-            actual_user = data['user_id']
             sessionStorage.setItem('authToken', data.access_token);
+            sessionStorage.setItem('user', data.user_id);
         }
 
         async function connectWebSocket() {
-            await getToken();
-            const access_token = sessionStorage.getItem('authToken');
-            loadRooms();
-
             socket = io("http://localhost:8000/", {
                 query: {
                     auth_token: access_token
@@ -77,7 +78,6 @@
         }
 
         async function loadRooms() {
-            const access_token = sessionStorage.getItem('authToken');
             const response = await fetch('http://localhost:8000/rooms', {
                 method: 'GET',
                 headers: {
@@ -99,7 +99,7 @@
                 roomButton.id = `room-${room.name}`
                 let roomsUsers = room.users.length ? room.users : []
                 let userInRoom = roomsUsers.length
-                                ? !!roomsUsers.find(user => user.id === actual_user)
+                                ? !!roomsUsers.find(user => user.id === Number(actual_user))
                                 : false
                 if (userInRoom) {
                   roomButton.onclick = () => enterRoom(room.id);
@@ -112,7 +112,6 @@
         }
 
         async function createRoom(name) {
-            const access_token = sessionStorage.getItem('authToken');
             const response = await fetch('http://localhost:8000/rooms', {
                 method: 'POST',
                 headers: {
