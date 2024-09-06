@@ -5,6 +5,7 @@ from .database import get_session_db
 from .crud import create_message
 from .auth import verify_token
 from .schemas import MessageCreate, MessageResponse
+from .models import Room, User
 
 sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins='*')
 
@@ -52,17 +53,11 @@ async def send_message(sid, data):
     id=message.id,
     content=message.content,
     timestamp=message.timestamp,
-    sender_id=message.sender_id
+    sender_id=message.sender_id,
+    username=username
   )
-
   await sio.emit('new_message', response.model_dump_json(), room=room)
   print(f"User {username} sent message to room {room}")
-
-@sio.event
-async def join_room(sid, data):
-  room = data['room']
-  await sio.enter_room(sid, room)
-  print(f"Session {sid} joined room {room}")
 
 @sio.event
 async def leave_room(sid, data):
@@ -71,11 +66,35 @@ async def leave_room(sid, data):
   print(f"Session {sid} left room {room}")
 
 @sio.event
-async def join_room(sid, room_id):
-    await sio.enter_room(sid, room_id)
-    print(f"User {sid} joined room {room_id}")
+async def connect_room(sid, data):
+  user_id = data.get('user_id')
+  room_id = data.get('room_id')
+
+  db: Session = next(get_session_db())
+
+  room = db.query(Room).filter(Room.id == room_id).first()
+  if not room:
+    return {"error": "Room not found"}
+
+  user = db.query(User).filter(User.id == user_id).first()
+  if not user:
+    return {"error": "User not found"}
+
+  if user not in room.users:
+      room.users.append(user)
+      db.commit()
+
+  await sio.enter_room(sid, room_id)
+  print(f"User {user_id} joined room {room_id}")
+
+  await sio.emit('user_joined', {'user_id': user_id, 'room_id': room_id}, room=room_id)
 
 @sio.event
 async def leave_room(sid, room_id):
     await sio.leave_room(sid, room_id)
     print(f"User {sid} left room {room_id}")
+
+@sio.event
+async def join_room(sid, room):
+    await sio.enter_room(sid, room)
+    print(f"Client {sid} joined room {room}")

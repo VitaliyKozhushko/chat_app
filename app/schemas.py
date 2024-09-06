@@ -1,5 +1,6 @@
 from pydantic import BaseModel
 from datetime import datetime
+from typing import List, Optional
 
 class UserBase(BaseModel):
   username: str
@@ -24,6 +25,7 @@ class MessageResponse(MessageBase):
   id: int
   timestamp: datetime
   sender_id: int
+  username: str
 
   class Config:
     from_attributes = True
@@ -31,6 +33,7 @@ class MessageResponse(MessageBase):
 class Token(BaseModel):
   access_token: str
   refresh_token: str
+  user_id: Optional[int] = None
 
   class Config:
     from_attributes = True
@@ -43,6 +46,7 @@ class RoomCreate(RoomBase):
 
 class RoomResponse(RoomBase):
   id: int
+  users: Optional[List[UserResponse]] = None
 
   class Config:
     from_attributes = True

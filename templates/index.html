@@ -8,11 +8,18 @@
 </head>
 <body>
     <h1>Socket.IO with FastAPI and JWT (WebSocket Only)</h1>
-    <button id="connect-btn">Connect to WebSocket</button>
+    <div id="action-btn">
+        <button id="connect-btn">Connect to WebSocket</button>
+    </div>
+    <div id="rooms"></div>
+    <div id="rooms-user"></div>
     <div id="messages"></div>
 
     <script>
         let socket;
+        let currentRoom = null;
+        let actual_user;
+
         async function getToken() {
             const response = await fetch('http://localhost:8000/login', {
               method: 'POST',
@@ -25,37 +32,114 @@
               }).toString()
             });
             const data = await response.json();
-            return data.access_token
+            if (data.access_token){
+              document.getElementById('action-btn').innerHTML += '<button id="create-room-btn">Create Room</button>';
+              document.getElementById('create-room-btn').addEventListener('click', async () => {
+                    const roomName = prompt('Enter room name:');
+                    if (roomName) {
+                        const room = await createRoom(roomName);
+                        console.log(`Room created: ${room.name}`);
+                        loadRooms();
+                    }
+                });
+            }
+            actual_user = data['user_id']
+            sessionStorage.setItem('authToken', data.access_token);
         }
 
         async function connectWebSocket() {
-            const token = await getToken();
-            console.log("Received Token:", token);
+            await getToken();
+            const access_token = sessionStorage.getItem('authToken');
+            loadRooms();
 
             socket = io("http://localhost:8000/", {
                 query: {
-                    auth_token: token
+                    auth_token: access_token
                 },
                 transports: ["websocket"]
             });
 
             socket.on("connect", () => {
                 console.log("Connected to WebSocket server!");
-                const messagesDiv = document.getElementById('messages');
-                messagesDiv.innerHTML += "<p>Connected to WebSocket</p>";
+                document.getElementById('messages').innerHTML += "<p>Connected to WebSocket</p>";
             });
 
             socket.on("new_message", (data) => {
                 console.log("Message from server:", data);
                 const messagesDiv = document.getElementById('messages');
-                messagesDiv.innerHTML += `<p>Server: ${JSON.parse(data).content}</p>`;
+                messagesDiv.innerHTML += `<p>Server: ${data.content}</p>`;
             });
 
             socket.on("disconnect", () => {
                 console.log("Disconnected from WebSocket server");
-                const messagesDiv = document.getElementById('messages');
-                messagesDiv.innerHTML += "<p>Disconnected from WebSocket</p>";
+                document.getElementById('messages').innerHTML += "<p>Disconnected from WebSocket</p>";
             });
+        }
+
+        async function loadRooms() {
+            const access_token = sessionStorage.getItem('authToken');
+            const response = await fetch('http://localhost:8000/rooms', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${access_token}`
+                }
+            });
+            const rooms = await response.json();
+            const roomsDiv = document.getElementById('rooms');
+            const userRoomsDiv = document.getElementById('rooms-user');
+            roomsDiv.innerHTML = '<h2>Доступные комнаты</h2>';
+            userRoomsDiv.innerHTML = '<h2>Комнаты пользователя</h2>';
+            if (!rooms.length) {
+              roomsDiv.innerHTML += `<p>${rooms.message}</p><hr>`;
+              return
+            }
+            rooms.forEach(room => {
+                const roomButton = document.createElement('button');
+                roomButton.textContent = room.name;
+                roomButton.id = `room-${room.name}`
+                let roomsUsers = room.users.length ? room.users : []
+                let userInRoom = roomsUsers.length
+                                ? !!roomsUsers.find(user => user.id === actual_user)
+                                : false
+                if (userInRoom) {
+                  roomButton.onclick = () => enterRoom(room.id);
+                  userRoomsDiv.appendChild(roomButton)
+                } else {
+                  roomButton.onclick = () => joinRoom(room.id, room.name);
+                  roomsDiv.appendChild(roomButton);
+                }
+            });
+        }
+
+        async function createRoom(name) {
+            const access_token = sessionStorage.getItem('authToken');
+            const response = await fetch('http://localhost:8000/rooms', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${access_token}`
+                },
+                body: JSON.stringify({ name })
+            });
+            const room = await response.json();
+            return room;
+        }
+
+        async function joinRoom(roomId, roomName) {
+            if (currentRoom) {
+                await socket.emit('leave_room', currentRoom);
+            }
+            await socket.emit('connect_room', { room_id: roomId, user_id: actual_user });
+            const btnRoom = document.getElementById(`room-${roomName}`)
+            const roomsDiv = document.getElementById('rooms');
+            const userRoomsDiv = document.getElementById('rooms-user')
+            roomsDiv.removeChild(btnRoom)
+            userRoomsDiv.appendChild(btnRoom);
+            console.log(`Joined room ${roomId}`);
+        }
+
+        async function enterRoom(roomId) {
+          window.location.href = `/chat/${roomId}-${actual_user}/`;
         }
 
         document.getElementById('connect-btn').addEventListener('click', () => {
