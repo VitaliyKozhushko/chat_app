@@ -13,6 +13,7 @@
     <div id="action-btn">
         <button id="connect-btn">Connect to WebSocket</button>
     </div>
+    <button id="user-online">Connect to Online</button>
     <div id="rooms"></div>
     <div id="rooms-user"></div>
     <div id="messages"></div>
@@ -20,8 +21,8 @@
     <script type="module">
         let socket;
         let currentRoom = null;
-        let access_token = sessionStorage.getItem('authToken') || null;
-        let actual_user = sessionStorage.getItem('user') || null;
+        let access_token
+        let actual_user
 
         async function getToken() {
             const response = await fetch('http://localhost:8000/login', {
@@ -35,6 +36,7 @@
               }).toString()
             });
             const data = await response.json();
+            console.log(data)
             if (data.access_token){
               document.getElementById('action-btn').innerHTML += '<button id="create-room-btn">Create Room</button>';
               document.getElementById('create-room-btn').addEventListener('click', async () => {
@@ -48,10 +50,12 @@
             }
             sessionStorage.setItem('authToken', data.access_token);
             sessionStorage.setItem('user', data.user_id);
+            document.getElementById('user-online').addEventListener('click', fetchOnlineUsers)
         }
 
         async function connectWebSocket() {
             await getToken()
+          const access_token = sessionStorage.getItem('authToken')
             loadRooms()
             socket = io("http://localhost:8000/", {
                 query: {
@@ -62,7 +66,9 @@
 
             socket.on("connect", () => {
                 console.log("Connected to WebSocket server!");
+                const actual_user = sessionStorage.getItem('user')
                 document.getElementById('messages').innerHTML += "<p>Connected to WebSocket</p>";
+                socket.emit('register', { userId: actual_user });
             });
 
             socket.on("new_message", (data) => {
@@ -143,6 +149,12 @@
 
         async function enterRoom(roomId) {
           window.location.href = `/chat/${roomId}-${actual_user}/`;
+        }
+
+        async function fetchOnlineUsers() {
+            const response = await fetch('http://localhost:8000/online-users');
+            const onlineUsers = await response.json();
+            console.log('Пользователи онлайн:', onlineUsers);
         }
 
         document.getElementById('connect-btn').addEventListener('click', () => {

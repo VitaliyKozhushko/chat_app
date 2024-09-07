@@ -9,6 +9,8 @@ from .models import Room, User
 
 sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins='*')
 
+users = {}
+
 @sio.event
 async def connect(sid, environ):
     query_string = environ.get('QUERY_STRING', '')
@@ -32,6 +34,11 @@ async def disconnect(sid):
   session = await sio.get_session(sid)
   username = session.get('username')
   print(f"User {username} disconnected")
+  for user_id, info in users.items():
+    if info['sid'] == sid:
+      users[user_id]['online'] = False
+      print(f"Пользователь {user_id} отключен")
+      break
 
 @sio.event
 async def send_message(sid, data):
@@ -113,3 +120,20 @@ async def join_room(sid, room, user_id):
       room=room,
     )
     print(f"Client {sid} joined room {room}")
+
+@sio.event
+async def register(sid, data):
+    user_id = data['userId']
+    users[user_id] = {'sid': sid, 'online': True}
+    print(f"Пользователь {user_id} зарегистрирован с id {sid}")
+
+@sio.event
+async def private_message(sid, data):
+    to_user_id = data['to']
+    message = data['message']
+
+    if to_user_id in users and users[to_user_id]['online']:
+        to_sid = users[to_user_id]['sid']
+        await sio.emit('private_message', {'from': sid, 'message': message}, room=to_sid)
+    else:
+        await sio.emit('error', {'message': 'User not found or offline'}, room=sid)
