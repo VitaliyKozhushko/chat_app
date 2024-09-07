@@ -7,49 +7,74 @@
     <script src="https://cdn.socket.io/4.3.2/socket.io.min.js"></script>
 </head>
 <body>
-    <h1>Chat Application</h1>
+    <a href="/">Главная</a>
+    <button id="leave-room" type="button">Покинуть комнату</button>
+    <h1 id="title-room" data-room-id="{{room.id}}">Комната {{room.name}}</h1>
 
     <div>
         <h2>Send Message</h2>
         <form id="message-form">
-            <input type="text" id="message-input" placeholder="Type a message" required>
+            <input type="text" id="message-input" placeholder="Type a message" required/>
             <button type="submit">Send</button>
         </form>
     </div>
 
     <div>
         <h2>Messages</h2>
-        <div id="messages"></div>
+        <div id="messages">
+            {% for message in messages %}
+              <p><strong>{{ message.sender }}:</strong> {{ message.content }}</p>
+            {% endfor %}
+        </div>
     </div>
 
     <script>
-        let token = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJ2aXRhbGl5IiwiZXhwIjoxNzI1NTUzMjUxfQ.rZrjemXJZHssyWNwm-_9gMmhmuYynQGTkF4Kd1-3Qg4'
+        const access_token = sessionStorage.getItem('authToken');
+        let userId = sessionStorage.getItem('user') || null;
+        const roomId = document.getElementById('title-room').getAttribute('data-room-id')
+        let username;
         socket = io("http://localhost:8000/", {
                 query: {
-                    auth_token: token
+                    auth_token: access_token
                 },
                 transports: ["websocket"]
             });
 
-        // Function to handle form submission
+        document.getElementById('leave-room').addEventListener('click', leaveChat)
+
         document.getElementById('message-form').addEventListener('submit', function(event) {
             event.preventDefault();
             const messageInput = document.getElementById('message-input');
             const message = messageInput.value;
 
-            // Send message to the server
-            socket.emit('send_message', { content: message });
+            socket.emit('send_message', { content: message, room_id: roomId });
 
-            // Clear the input field
             messageInput.value = '';
         });
 
-        // Listen for incoming messages
+        socket.on('connect', function() {
+            console.log('Connected to server');
+            socket.emit('join_room', roomId, userId);
+        });
+
         socket.on('new_message', function(data) {
-            console.log(JSON.parse(data))
             response = JSON.parse(data)
             const messagesDiv = document.getElementById('messages');
-            messagesDiv.innerHTML += `<p>${response.content}</p>`;
+            messagesDiv.innerHTML += `<div style="display: flex; align-items: center;"><p><strong style="margin-right: 7px;">${response.username}:</strong>${response.content}</p></div>`;
+        });
+
+        function leaveChat(e) {
+          socket.emit('disconnect_room', { user_id: userId, room_id: roomId });
+          window.location.href = '/'
+        }
+
+        socket.on('user_joined', function(data) {
+            username = data.username
+            console.log(`User ${data.username} was added to room`);
+        });
+
+        socket.on('user_left', function(data) {
+            console.log(`User ${data.username} left room`);
         });
     </script>
 </body>
