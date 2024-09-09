@@ -14,6 +14,11 @@
         <button id="connect-btn">Connect to WebSocket</button>
     </div>
     <button id="user-online">Connect to Online</button>
+    <div>
+        <input type="text" id="user-socket-id"/>
+        <input type="text" id="message-user"/>
+        <button id="send-private-mes">Send message</button>
+    </div>
     <div id="rooms"></div>
     <div id="rooms-user"></div>
     <div id="messages"></div>
@@ -85,6 +90,10 @@
             socket.on("disconnect", () => {
                 console.log("Disconnected from WebSocket server");
                 document.getElementById('messages').innerHTML += "<p>Disconnected from WebSocket</p>";
+            });
+
+            socket.on('private_message', function(data) {
+                console.log(`Получено сообщение от ${data.from}: ${data.message}`);
             });
         }
 
@@ -160,6 +169,16 @@
         document.getElementById('connect-btn').addEventListener('click', () => {
             connectWebSocket();
         });
+        document.getElementById('send-private-mes').addEventListener('click', sendPrivateMes)
+
+        function sendPrivateMes() {
+            let toUserId = document.getElementById('user-socket-id').value
+            let message = document.getElementById('message-user').value
+            socket.emit('private_message', {
+                to: toUserId,
+                message: message
+            });
+        }
     </script>
 </body>
 </html>
