@@ -10,6 +10,25 @@ export default defineConfig({
     vue(),
     vueJsx(),
   ],
+  server: {
+    watch: {
+      usePolling: true,
+      interval: 100,
+      ignored: ['node_modules/**']
+    },
+    hmr: true,
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8000',
+        changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
+      },
+      '/socket.io': {
+        target: 'ws://localhost:8000',
+        ws: true,
+      },
+    },
+  },
   resolve: {
     alias: {
       '@': fileURLToPath(new URL('./src', import.meta.url))

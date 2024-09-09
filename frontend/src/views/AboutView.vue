@@ -1,6 +1,11 @@
+<script setup>
+import LoginForm from '../components/Login.vue'
+</script>
+
 <template>
   <div class="about">
     <h1>This is an about page</h1>
+    <LoginForm />
   </div>
 </template>
 
