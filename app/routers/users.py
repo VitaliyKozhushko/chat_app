@@ -4,6 +4,8 @@ from app.crud import get_user_by_username, create_user, get_user
 from app.schemas import UserResponse, UserCreate, UserBase
 from app.database import get_session_db
 from app.auth import get_current_user
+from app.sockets import users
+from typing import List
 
 router = APIRouter()
 
@@ -21,3 +23,8 @@ async def update_current_user(update_user: UserBase, db: Session = Depends(get_s
   db.refresh()
 
   return user
+
+@router.get("/online-users", response_model=List[str])
+async def get_online_users():
+  print(users)
+  return [user_id for user_id, info in users.items() if info['online']]
