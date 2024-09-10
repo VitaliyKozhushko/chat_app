@@ -10,6 +10,6 @@ import Auth from '@/views/Auth.vue'
 import PersonalAccount from "@/views/PersonalAccount.vue"
 import {ref} from 'vue'
 
-const isEnter = ref(false)
+const isEnter = ref(true)
 
 </script>

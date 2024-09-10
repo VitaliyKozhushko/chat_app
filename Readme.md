@@ -43,3 +43,5 @@ uvicorn app.main:socketio_app --reload
 
 - не адаптивен
 - VueJS + compositionAPI
+- UI: ElementPlus
+- комнаты может создавать любой пользователь и они будут видны всем
