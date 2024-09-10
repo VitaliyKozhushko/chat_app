@@ -4,11 +4,11 @@
         <img class="logo" :src="logo" alt="logo">
       </div>
       <div v-if="!isLoginDisplay && !isRegisterDisplay" class="sign-btns">
-        <el-button type="primary" link @click="isLoginDisplay = !isLoginDisplay">Sign in</el-button>
-        <el-button type="primary" link @click="isRegisterDisplay = !isRegisterDisplay">Sign up</el-button>
+        <el-button type="primary" link @click="isLoginDisplay = !isLoginDisplay">Войти</el-button>
+        <el-button type="primary" link @click="isRegisterDisplay = !isRegisterDisplay">Зарегистрироваться</el-button>
       </div>
-      <Login v-if="isLoginDisplay" @displayRegistration="displayReg"/>
-      <Registration v-if="isRegisterDisplay"/>
+      <Login v-if="isLoginDisplay" @toggleAuth="changeSign"/>
+      <Registration v-if="isRegisterDisplay" @toggleAuth="changeSign"/>
   </div>
 </template>
 
@@ -23,9 +23,8 @@ import Registration from '@/components/Registration.vue'
 const isLoginDisplay = ref(false)
 const isRegisterDisplay = ref(false)
 
-const displayReg = () => {
-  isLoginDisplay.value = false
-  isRegisterDisplay.value = !isRegisterDisplay.value
-
+const changeSign = (data) => {
+  isLoginDisplay.value = data.isLoginDisplay
+  isRegisterDisplay.value = data.isRegisterDisplay
 };
 </script>

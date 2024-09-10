@@ -23,7 +23,8 @@
     margin-bottom: auto;
   }
 
-  .login-block {
+  .login-block,
+  .signup-block {
     display: grid;
     margin-bottom: auto;
     gap: 10px;
@@ -34,6 +35,10 @@
 
     button {
       margin: 0 auto;
+    }
+
+    .change-decision {
+      display: flex;
     }
   }
 }

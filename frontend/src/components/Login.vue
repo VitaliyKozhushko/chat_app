@@ -1,9 +1,13 @@
 <template>
   <div class="login-block">
     <el-input v-model="username" placeholder="username"/>
-    <el-input v-model="password" placeholder="password"/>
-    <el-button type="primary" class="login-btn" @click="login">Login</el-button>
-    <el-button type="primary" @click="registration" link>Sign up?</el-button>
+    <el-input v-model="password" type="password" show-password placeholder="password"/>
+    <el-button type="primary" class="login-btn" @click="login">Войти</el-button>
+    <div class="change-decision">
+      <el-text class="mx-1" size="small">Еще нет аккаунта?</el-text>
+      <el-button type="primary" @click="() => registration(true)" size="small" link>Регистрация</el-button>
+    </div>
+    <el-button type="primary" @click="() => registration(false)" link size="small">На главную</el-button>
   </div>
 </template>
 
@@ -12,15 +16,11 @@ import { ref } from 'vue';
 import { io } from 'socket.io-client'
 import { defineEmits } from 'vue'
 
-const emit = defineEmits(['displayRegistration']);
+const emit = defineEmits(['toggleAuth']);
 
-const registration = () => {
-  emit('displayRegistration', true);
-};
-
-const notifyParent = () => {
-  emit('updateParent', true); // Передаем значение родителю
-};
+const registration = (isReg) => {
+  emit('toggleAuth', {isLoginDisplay: false, isRegisterDisplay: isReg})
+}
 
 const username = ref('');
 const password = ref('');
