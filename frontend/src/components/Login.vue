@@ -1,7 +1,5 @@
 <template>
-  <div>
-    <img :src="logo" alt="Logo" />
-    <h1>Login</h1>
+  <div class="auth-page">
     <form @submit.prevent="login">
       <input v-model="username" placeholder="Username" required />
       <input v-model="password" type="password" placeholder="Password" required />
@@ -13,7 +11,6 @@
 
 <script>
 import { io } from 'socket.io-client'
-import logo from '@/assets/logo/logo.png'
 
 export default {
   data() {
@@ -21,7 +18,6 @@ export default {
       username: '',
       password: '',
       errorMessage: '',
-      logo
     }
   },
   methods: {

@@ -1,10 +1,10 @@
 <script setup>
-import LoginForm from '../components/Login.vue'
+import Auth from '@/views/Auth.vue'
 </script>
 
 <template>
   <main>
-    <LoginForm/>
+    <Auth/>
   </main>
 </template>
 
