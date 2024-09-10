@@ -1,11 +1,9 @@
 <template>
-  <div class="auth-page">
-    <form @submit.prevent="login">
-      <input v-model="username" placeholder="Username" required />
-      <input v-model="password" type="password" placeholder="Password" required />
-      <el-button type="primary" @click="login">Login</el-button>
-    </form>
-    <p v-if="errorMessage" class="error">{{ errorMessage }}</p>
+  <div class="login-block">
+    <el-input v-model="username" placeholder="username"/>
+    <el-input v-model="password" placeholder="password"/>
+    <el-button type="primary" class="login-btn" @click="login">Login</el-button>
+    <el-button type="primary" @click="login" link>Sign up?</el-button>
   </div>
 </template>
 

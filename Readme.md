@@ -42,3 +42,4 @@ uvicorn app.main:socketio_app --reload
 ## Фронт
 
 - не адаптивен
+- VueJS + compositionAPI
