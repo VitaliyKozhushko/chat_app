@@ -1,13 +1,15 @@
-<script setup>
-import Auth from '@/views/Auth.vue'
-</script>
-
 <template>
   <main>
-    <Auth/>
+    <Auth v-if="!isEnter" @toggleEnter="isEnter = !isEnter"/>
+    <PersonalAccount v-if="isEnter"/>
   </main>
 </template>
 
-<style scoped>
+<script setup>
+import Auth from '@/views/Auth.vue'
+import PersonalAccount from "@/views/PersonalAccount.vue"
+import {ref} from 'vue'
 
-</style>
+const isEnter = ref(false)
+
+</script>
