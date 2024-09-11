@@ -1,6 +1,7 @@
 .chats-list,
 .rooms-list,
-.notify-list {
+.notify-list,
+.dialogs {
   display: flex;
   flex-direction: column;
   height: calc(90vh - 10px);
@@ -58,6 +59,28 @@
     &:hover {
       .el-icon {
         display: block;
+      }
+    }
+  }
+}
+
+.dialogs {
+  .dialog-card {
+    width: 50%;
+    border-radius: 20px;
+    p {
+      word-break: break-all;
+    }
+    &.right {
+      float: right;
+      .el-card__body {
+        justify-content: flex-end;
+        .user-icon{
+          order: 2
+        }
+        p {
+          order: 1
+        }
       }
     }
   }

@@ -15,4 +15,16 @@
   .list_items_menu {
     background: rgb(246, 247, 249);
   }
+
+  .logo-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    .logo {
+      width: 260px;
+      height: 500px;
+    }
+  }
 }

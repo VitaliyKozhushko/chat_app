@@ -10,8 +10,8 @@
 import ChatsList from "@/components/ListItems/ChatsList.vue"
 import RoomsList from "@/components/ListItems/RoomsList.vue"
 import Notifications from "@/components/ListItems/NotifyList.vue"
-import {useStore} from "vuex";
-import {computed, ref, watch} from "vue"
+import {useStore} from "vuex"
+import {computed, watch, shallowRef} from "vue"
 
 const store = useStore()
 
@@ -23,7 +23,7 @@ const componentsMap = {
   notify: Notifications,
 }
 
-const currentComponent = ref(componentsMap[actualItemMenu.value])
+const currentComponent = shallowRef(componentsMap[actualItemMenu.value])
 
 watch(actualItemMenu, (newVal) => {
   currentComponent.value = componentsMap[newVal] || null
