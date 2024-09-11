@@ -1,0 +1,30 @@
+.personal-account-page {
+  display: grid;
+  grid-template-columns: 70px 300px auto;
+  width: 1000px;
+  height: 90vh;
+  margin: 0 auto;
+  border: 2px solid #e9eaf1;
+  border-radius: 30px;
+
+  .menu,
+  .list_items_menu {
+    border-right: 2px solid #e9eaf1;
+  }
+
+  .list_items_menu {
+    background: rgb(246, 247, 249);
+  }
+
+  .logo-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    .logo {
+      width: 260px;
+      height: 500px;
+    }
+  }
+}

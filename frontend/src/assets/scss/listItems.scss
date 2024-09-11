@@ -1,0 +1,92 @@
+.chats-list,
+.rooms-list,
+.notify-list,
+.dialogs {
+  display: flex;
+  flex-direction: column;
+  height: calc(90vh - 10px);
+  padding: 10px 5px;
+  z-index: -1;
+
+  .el-scrollbar {
+    height: calc(90vh - 15px);
+
+    .el-card {
+      margin-bottom: 10px;
+      border-radius: 20px;
+      &:hover {
+        cursor: pointer;
+      }
+
+      .el-card__body {
+        display: flex;
+        align-items: flex-end;
+        gap: 10px;
+
+        .user-icon {
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          width: 35px;
+          height: 35px;
+          border-radius: 50%;
+          border: 1px solid #e9eaf1;
+
+          .el-icon {
+            transform: scale(1.5);
+            color: rgba(34, 37, 47, 0.75);
+          }
+        }
+      }
+    }
+  }
+}
+
+.rooms-list {
+  .add-room {
+    margin: 10px auto;
+  }
+
+  .el-scrollbar {
+    height: calc(40vh - 15px);
+  }
+}
+
+.notify-list {
+  .el-card {
+    .el-icon {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    &:hover {
+      .el-icon {
+        display: block;
+      }
+    }
+  }
+}
+
+.dialogs {
+  .dialog-card {
+    width: 50%;
+    border-radius: 20px;
+    p {
+      word-break: break-all;
+    }
+    &.right {
+      float: right;
+      .el-card__body {
+        justify-content: flex-end;
+        .user-icon{
+          order: 2
+        }
+        p {
+          order: 1
+        }
+      }
+    }
+  }
+}

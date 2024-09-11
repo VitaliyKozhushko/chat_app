@@ -1,0 +1,49 @@
+.auth-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 250px;
+  height: 100%;
+  margin: 0 auto;
+
+  .logo-block {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin-top: 100px;
+    margin-bottom: 70px;
+    gap: 10px;
+    .logo {
+      width: 182px;
+      height: 350px;
+    }
+  }
+
+  .sign-btns {
+    display: flex;
+    justify-content: space-around;
+    width: 100%;
+    margin-bottom: auto;
+  }
+
+  .login-block,
+  .signup-block {
+    display: grid;
+    margin-bottom: auto;
+    gap: 10px;
+
+    .login-btn {
+      width: fit-content;
+    }
+
+    button {
+      margin: 0 auto;
+    }
+
+    .change-decision {
+      display: flex;
+    }
+  }
+}
