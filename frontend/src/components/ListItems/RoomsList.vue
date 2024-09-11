@@ -1,7 +1,7 @@
 <template>
-  <div class="list_items_menu">
-    das
-  </div>
+  <p>
+    RoomsList
+  </p>
 </template>
 
 <script setup>

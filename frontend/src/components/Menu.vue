@@ -4,7 +4,7 @@
       <img :src="logo_mini" alt="logo_mini"/>
     </div>
     <div class="menu-items">
-      <el-icon size="24" :class="{'active': actualItemMenu === 'chat'}" @click="() => changeMenuItem('chat')">
+      <el-icon size="24" :class="{'active': actualItemMenu === 'chats'}" @click="() => changeMenuItem('chats')">
         <ChatRound/>
       </el-icon>
       <el-icon size="24" :class="{'active': actualItemMenu === 'rooms'}" @click="() => changeMenuItem('rooms')">
@@ -26,7 +26,6 @@ import {useStore} from 'vuex'
 const store = useStore()
 
 const actualItemMenu = computed(() => store.state.actualItemMenu)
-console.log(actualItemMenu.value)
 
 const changeMenuItem = (newItem) => {
   store.commit('setActualItemMenu', newItem)

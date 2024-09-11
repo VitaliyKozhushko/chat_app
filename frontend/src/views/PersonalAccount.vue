@@ -11,5 +11,5 @@
 <script setup>
 import '@/assets/scss/personalAccounts.scss'
 import Menu from "@/components/Menu.vue"
-import ListItems from '@/components/ListItems.vue'
+import ListItems from '@/components/ListItems/ListItems.vue'
 </script>
