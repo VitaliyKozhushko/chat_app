@@ -31,7 +31,7 @@
 import {Plus} from '@element-plus/icons-vue'
 import axios from "@/axios.js";
 import {ElNotification} from "element-plus"
-import {ref, onMounted, computed} from 'vue'
+import {ref, onMounted, computed, watch} from 'vue'
 import {useStore} from 'vuex'
 import RoomCreateDialog from "@/components/ListItems/RoomCreateDialog.vue"
 
@@ -45,6 +45,13 @@ const userRooms = ref([])
 const userId = ref('')
 const displayModal = ref(false)
 const activeChat = computed(() => store.state.activeChat);
+const actualItemMenu = computed(() => store.state.actualItemMenu)
+
+watch(actualItemMenu, (newActualItem) => {
+  if (newActualItem === 'rooms') {
+    loadRooms()
+  }
+})
 
 const displayRooms = (rooms) => {
   rooms.forEach(room => {

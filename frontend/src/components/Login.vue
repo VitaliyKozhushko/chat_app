@@ -17,6 +17,9 @@ import { ref, defineEmits } from 'vue'
 import axios from '@/axios'
 import { ElNotification } from 'element-plus'
 import { useRouter } from 'vue-router'
+import {useStore} from 'vuex'
+
+const store = useStore()
 
 const emit = defineEmits(['toggleAuth']);
 const router = useRouter();

@@ -6,7 +6,7 @@ export default createStore({
     actualItemMenu: 'chats',
     socket: null,
     activeChat: null,
-    messages: []
+    messages: [],
   },
   mutations: {
     SET_ACTUAL_ITEM_MENU(state, newItem) {
@@ -26,12 +26,17 @@ export default createStore({
     }
   },
   actions: {
-    initSocket({ commit }, {access_token, transport}) {
+    initSocket({ commit }, {access_token, transport, userId}) {
       const socket = io("http://localhost:8000/", {
       query: {
         auth_token: access_token
       },
       transports: [transport]
+      });
+      socket.emit('register', userId);
+      socket.on('private_message', (data) => {
+        console.log(data)
+        commit('UPDATE_MESSAGES', data)
       });
       commit('SET_SOCKET', socket);
     }

@@ -6,7 +6,7 @@
           v-for="mes in messages"
           :key="mes.id"
           class="dialog-card"
-          :class="+userId === mes.sender_id ? 'right' : 'left'"
+          :class="+userId === +mes.sender_id ? 'right' : 'left'"
         >
           <div class="user-icon">
             <el-icon>
@@ -37,7 +37,7 @@
 
 <script setup>
 import {useStore} from 'vuex';
-import {computed, onMounted, ref, watch} from 'vue';
+import {computed, ref, watch} from 'vue';
 import {ElNotification} from 'element-plus';
 
 const store = useStore();
@@ -45,12 +45,38 @@ const socket = computed(() => store.getters.getSocket);
 const activeChat = computed(() => store.state.activeChat);
 const messages = computed(() => store.state.messages);
 const userId = localStorage.getItem('userId');
-const isSocketListener = ref(false)
+const isSocketListener = ref(false);
+const actualItemMenu = computed(() => store.state.actualItemMenu);
 
 const message = ref('');
 const messageInput = ref(null);
 
+function sendMesToUser() {
+  if (socket.value && message.value.trim() !== '') {
+    console.log(activeChat.value)
+    console.log(message.value)
+    socket.value.emit('private_message', {
+      to: activeChat.value,
+      from: userId,
+      message: message.value,
+    });
+    message.value = '';
+    messageInput.value.blur();
+  } else {
+    ElNotification({
+      title: 'Ошибка',
+      message: 'Не получилось отправить приватное сообщение. Попробуйте позже',
+      type: 'error',
+      position: 'bottom-right',
+    });
+  }
+}
+
 const sendMessage = () => {
+  if (actualItemMenu.value === 'chats') {
+    sendMesToUser();
+    return;
+  }
   if (socket.value && message.value.trim() !== '') {
     socket.value.emit('send_message', {
       content: message.value,
@@ -69,17 +95,19 @@ const sendMessage = () => {
 };
 
 function updMes(data) {
+  console.log(data);
   store.commit('UPDATE_MESSAGES', JSON.parse(data));
 }
 
 watch(activeChat, (newActiveChat, oldActiveChat) => {
   if (newActiveChat !== oldActiveChat) {
-    isSocketListener.value = false
-    socket.value.off('send_message', updMes)
+    if (oldActiveChat) {
+      socket.value.off('send_message', updMes);
+    }
+    if (newActiveChat) {
+      socket.value.on('send_message', updMes);
+    }
+    isSocketListener.value = !!newActiveChat;
   }
-  if (newActiveChat && !isSocketListener.value) {
-    socket.value.on('send_message', updMes)
-    isSocketListener.value = true
-  }
-})
+});
 </script>
