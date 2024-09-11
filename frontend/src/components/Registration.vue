@@ -2,7 +2,6 @@
   <div class="signup-block">
     <el-input v-model="username" placeholder="username"/>
     <el-input v-model="password" type="password" show-password placeholder="password"/>
-    <el-input v-model="email" placeholder="email@email.ru"/>
     <el-button type="primary" class="login-btn" @click="registration">Зарегистрироваться</el-button>
     <div class="change-decision">
       <el-text class="mx-1" size="small">Уже есть аккаунт</el-text>
@@ -17,7 +16,6 @@ import {defineEmits, ref} from 'vue'
 
 const username = ref('')
 const password = ref('')
-const email = ref('')
 
 const emit = defineEmits(['toggleAuth'])
 

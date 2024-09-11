@@ -1,9 +1,7 @@
 <template>
   <div class="personal-account-page">
     <Menu/>
-    <div class="list_items_menu">
-      das
-    </div>
+    <ListItems/>
     <div class="dialogs">
       das
     </div>
@@ -13,4 +11,5 @@
 <script setup>
 import '@/assets/scss/personalAccounts.scss'
 import Menu from "@/components/Menu.vue"
+import ListItems from '@/components/ListItems.vue'
 </script>

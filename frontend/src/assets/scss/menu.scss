@@ -1,9 +1,23 @@
 .menu {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  gap: 10px;
-  border-right: 2px solid #e9eaf1;
+  .logo-mini {
+    width: 56px;
+    height: 56px;
+    margin: 10px auto 0;
+
+    img {
+      width: inherit;
+      height: inherit;
+    }
+  }
+
+  .menu-items {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 10px;
+    height: 100%;
+    width: 100%;
+  }
 
   .el-icon {
     height: 56px;
@@ -11,7 +25,8 @@
     margin: 0 auto;
     border-radius: 10px;
     color: rgba(34, 37, 47, 0.75);
-    &:hover {
+    &:hover,
+    &.active {
       border-radius: 10px;
       background: #cde9ff;
       color: #058fff;

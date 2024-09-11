@@ -1,5 +1,9 @@
 @import 'base.css';
 
+main {
+  width: 100vw
+}
+
 a,
 .green {
   text-decoration: none;
