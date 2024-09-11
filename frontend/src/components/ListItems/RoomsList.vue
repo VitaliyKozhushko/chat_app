@@ -31,7 +31,7 @@
 import {Plus} from '@element-plus/icons-vue'
 import axios from "@/axios.js";
 import {ElNotification} from "element-plus"
-import {ref, onMounted} from 'vue'
+import {ref, onMounted, computed} from 'vue'
 import {useStore} from 'vuex'
 import RoomCreateDialog from "@/components/ListItems/RoomCreateDialog.vue"
 
@@ -44,6 +44,7 @@ const availableRooms = ref([])
 const userRooms = ref([])
 const userId = ref('')
 const displayModal = ref(false)
+const activeChat = computed(() => store.state.activeChat);
 
 const displayRooms = (rooms) => {
   rooms.forEach(room => {
@@ -156,6 +157,7 @@ const displayChat = async (room) => {
     })
     const transform_mes = response.data.sort((a, b) => b.id - a.id);
     store.commit('SET_MESSAGES', transform_mes);
+    if (activeChat.value) socket.emit('leave_room', room.id, userId.value);
     socket.emit('join_room', room.id, userId.value);
   } catch (err) {
     let errMes = err.response?.data?.detail || 'Невозможно получить список сообщений для комнаты.Попробуйте позже'

@@ -139,6 +139,14 @@ async def join_room(sid, room, user_id):
     )
     print(f"Client {sid} joined room {room}")
 
+# выход пользователя из комнаты
+@sio.event
+async def leave_room(sid, room, user_id):
+  db: Session = next(get_session_db())
+  user = db.query(User).filter(User.id == user_id).first()
+  await sio.leave_room(sid, room)
+  await sio.emit('user_left', {'user_id': user_id, 'username': user.username}, room=room)
+
 @sio.event
 async def register(sid, data):
     user_id = data['userId']
