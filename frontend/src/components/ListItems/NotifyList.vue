@@ -1,7 +1,7 @@
 <template>
   <div class="notify-list">
     <el-scrollbar>
-      <el-card shadow="hover">
+      <el-card shadow="hover" @click="() => directToInfo('rooms')">
         <el-icon>
           <Close />
         </el-icon>
@@ -14,6 +14,11 @@
 </template>
 
 <script setup>
+import {useStore} from 'vuex'
 
-import {Plus} from "@element-plus/icons-vue";
+const store = useStore()
+
+const directToInfo = (direction) => {
+  store.commit('setActualItemMenu', direction)
+}
 </script>
