@@ -29,6 +29,7 @@
         let access_token
         let actual_user
 
+        //done
         async function getToken() {
             const response = await fetch('http://localhost:8000/login', {
               method: 'POST',
@@ -57,7 +58,7 @@
             sessionStorage.setItem('user', data.user_id);
             document.getElementById('user-online').addEventListener('click', fetchOnlineUsers)
         }
-
+        //done
         async function connectWebSocket() {
             await getToken()
           const access_token = sessionStorage.getItem('authToken')
@@ -96,7 +97,7 @@
                 console.log(`Получено сообщение от ${data.from}: ${data.message}`);
             });
         }
-
+        //done
         async function loadRooms() {
             const response = await fetch('http://localhost:8000/rooms', {
                 method: 'GET',
@@ -130,7 +131,7 @@
                 }
             });
         }
-
+        //done
         async function createRoom(name) {
             const response = await fetch('http://localhost:8000/rooms', {
                 method: 'POST',
@@ -143,7 +144,7 @@
             const room = await response.json();
             return room;
         }
-
+        //done
         async function joinRoom(e, roomId, roomName) {
             await socket.emit('connect_room', { room_id: roomId, user_id: actual_user });
             const btnRoom = document.getElementById(`room-${roomName}`)

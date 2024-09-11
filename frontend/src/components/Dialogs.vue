@@ -1,24 +1,21 @@
 <template>
   <div class="dialogs">
     <el-scrollbar v-if="activeChat">
-      <el-card class="dialog-card left">
+      <el-card
+          v-for="mes in messages"
+          :key="mes.id"
+          class="dialog-card"
+          :class="+userId === mes.sender_id ? 'right' : 'left'">
         <div class="user-icon">
           <el-icon>
             <User />
           </el-icon>
         </div>
-        <p>
-          Mikle
+        <p class="sender">
+          {{mes.sender}}
         </p>
-      </el-card>
-      <el-card class="dialog-card right">
-        <div class="user-icon">
-          <el-icon>
-            <User />
-          </el-icon>
-        </div>
-        <p>
-          Mikle
+        <p class="message">
+          {{mes.content}}
         </p>
       </el-card>
     </el-scrollbar>
@@ -35,4 +32,8 @@ import {computed} from "vue";
 const store = useStore()
 
 const activeChat = computed(() => store.state.activeChat)
+const messages = computed(() => store.state.messages)
+const userId = localStorage.getItem('userId')
+
+console.log(messages.value)
 </script>

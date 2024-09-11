@@ -56,7 +56,6 @@ const displayRooms = (rooms) => {
 }
 
 const loadRooms = async () => {
-  console.log('loadRooms')
   try {
     loading.value = true
     const response = await axios.get('/rooms')
@@ -147,9 +146,30 @@ const leaveRoom = (room) => {
   }
 }
 
-const displayChat = (user) => {
-    store.commit('SET_ACTIVE_CHAT', true)
+const displayChat = async (room) => {
+  const accessToken = localStorage.getItem('access_token');
+  try {
+    loading.value = true
+    const response = await axios.get(`/chat/${room.id}-${userId.value}`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      }
+    })
+    console.log(response.data)
+    store.commit('SET_MESSAGES', response.data);
+  } catch (err) {
+    let errMes = err.response?.data?.detail || 'Невозможно получить список сообщений для комнаты.Попробуйте позже'
+    ElNotification({
+      title: 'Ошибка',
+      message: errMes,
+      type: 'error',
+      position: 'bottom-right'
+    })
+  } finally {
+    loading.value = false
   }
+  store.commit('SET_ACTIVE_CHAT', true)
+}
 
 const updateAvailableRooms = (newRoom) => {
   availableRooms.value.push(newRoom)

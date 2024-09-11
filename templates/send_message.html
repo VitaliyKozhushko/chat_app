@@ -62,7 +62,7 @@
             const messagesDiv = document.getElementById('messages');
             messagesDiv.innerHTML += `<div style="display: flex; align-items: center;"><p><strong style="margin-right: 7px;">${response.username}:</strong>${response.content}</p></div>`;
         });
-
+        //done
         function leaveChat(e) {
           socket.emit('disconnect_room', { user_id: userId, room_id: roomId });
           window.location.href = '/'

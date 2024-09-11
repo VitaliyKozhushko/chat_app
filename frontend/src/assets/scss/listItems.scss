@@ -110,20 +110,34 @@
     text-align: center;
   }
 
+  .el-scrollbar__view {
+    display: flex;
+    flex-direction: column;
+  }
+
   .dialog-card {
-    width: 50%;
+    width: 70%;
     border-radius: 20px;
     p {
       word-break: break-all;
     }
+    .sender {
+      font-weight: bold;
+    }
+    .message {
+      width: 63%;
+    }
     &.right {
-      float: right;
+      align-self: flex-end;
       .el-card__body {
         justify-content: flex-end;
         .user-icon{
+          order: 3
+        }
+        .sender {
           order: 2
         }
-        p {
+        .message {
           order: 1
         }
       }

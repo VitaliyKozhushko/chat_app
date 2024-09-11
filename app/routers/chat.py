@@ -18,8 +18,9 @@ router = APIRouter()
 
 templates = Jinja2Templates(directory='templates')
 
-@router.get("/chat/{room_id}-{user_id}", response_class=HTMLResponse)
+@router.get("/chat/{room_id}-{user_id}",response_class=JSONResponse)
 async def chat_room(request: Request, room_id: int, db: Session = Depends(get_session_db)):
+  print('room_id', room_id)
   room = get_room_messages(db, id=room_id)
   messages = room.messages
   messages_data = [
@@ -27,19 +28,12 @@ async def chat_room(request: Request, room_id: int, db: Session = Depends(get_se
       "id": message.id,
       "content": message.content,
       "timestamp": message.timestamp.isoformat(),
-      "sender": message.sender.username
+      "sender": message.sender.username,
+      "sender_id": message.sender_id
     }
     for message in messages
   ]
-  print('messages_data:', room.messages)
-  return templates.TemplateResponse(
-    "send_message.html",
-    {
-      "request": request,
-      "room": room,
-      "messages": messages_data
-    }
-  )
+  return JSONResponse(content=messages_data)
 
 @router.get("/", response_class=HTMLResponse)
 async def main_page(request: Request):
