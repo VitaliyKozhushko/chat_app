@@ -28,6 +28,6 @@ const store = useStore()
 const actualItemMenu = computed(() => store.state.actualItemMenu)
 
 const changeMenuItem = (newItem) => {
-  store.commit('setActualItemMenu', newItem)
+  store.commit('SET_ACTUAL_ITEM_MENU', newItem)
 }
 </script>

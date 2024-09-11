@@ -29,13 +29,9 @@ const displayDialog = computed(() => {
   return ['chats', 'rooms'].includes(actualItemMenu.value)
 })
 
-const socket = store.getters.getSocket;
-
 onMounted(() => {
   const access_token = localStorage.getItem('access_token');
 
   store.dispatch('initSocket', {access_token, transport: 'websocket'});
-  const message = computed(() => store.getters.getMessage);
-  console.log(message.value)
 })
 </script>

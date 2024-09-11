@@ -19,6 +19,6 @@ import {useStore} from 'vuex'
 const store = useStore()
 
 const directToInfo = (direction) => {
-  store.commit('setActualItemMenu', direction)
+  store.commit('SET_ACTUAL_ITEM_MENU', direction)
 }
 </script>

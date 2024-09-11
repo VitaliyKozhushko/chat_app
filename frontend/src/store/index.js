@@ -5,17 +5,14 @@ export default createStore({
   state: {
     actualItemMenu: 'chats',
     socket: null,
-    message: ''
+    activeChat: false
   },
   mutations: {
-    setActualItemMenu(state, newItem) {
+    SET_ACTUAL_ITEM_MENU(state, newItem) {
       state.actualItemMenu = newItem;
     },
-    setSocket(state, connection) {
+    SET_SOCKET(state, connection) {
       state.socket = connection
-    },
-    SET_MESSAGE(state, message) {
-      state.message = message;
     }
   },
   actions: {
@@ -26,11 +23,11 @@ export default createStore({
       },
       transports: [transport]
       });
-      commit('setSocket', socket);
+      commit('SET_SOCKET', socket);
     }
   },
   getters: {
     getSocket: (state) => state.socket,
-    getMessage: (state) => state.message
+    getActiveChat: (state) => state.activeChat,
   }
 })

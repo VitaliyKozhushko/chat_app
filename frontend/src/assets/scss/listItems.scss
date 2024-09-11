@@ -9,6 +9,7 @@
   z-index: -1;
 
   .el-scrollbar {
+    width: 100%;
     height: calc(90vh - 15px);
 
     .el-card {
@@ -83,6 +84,16 @@
 }
 
 .dialogs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+
+  .info-text {
+    width: 65%;
+    text-align: center;
+  }
+
   .dialog-card {
     width: 50%;
     border-radius: 20px;

@@ -1,6 +1,6 @@
 <template>
   <div class="dialogs">
-    <el-scrollbar>
+    <el-scrollbar v-if="activeChat">
       <el-card class="dialog-card left">
         <div class="user-icon">
           <el-icon>
@@ -22,10 +22,14 @@
         </p>
       </el-card>
     </el-scrollbar>
+    <el-text class="info-text" v-else type="primary" size="large">Выберите комнату или пользователя, чтобы начать общение</el-text>
   </div>
 </template>
 
 <script setup>
+import {useStore} from 'vuex'
 
-import {Plus} from "@element-plus/icons-vue";
+const store = useStore()
+
+const activeChat = store.getters.getActiveChat
 </script>
