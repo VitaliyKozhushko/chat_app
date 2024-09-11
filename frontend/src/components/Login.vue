@@ -18,8 +18,10 @@ import { ref } from 'vue'
 import { defineEmits } from 'vue'
 import axios from '@/axios'
 import { ElNotification } from 'element-plus'
+import { useRouter } from 'vue-router'
 
 const emit = defineEmits(['toggleAuth']);
+const router = useRouter();
 
 const registration = (isReg) => {
   emit('toggleAuth', {isLoginDisplay: false, isRegisterDisplay: isReg})
@@ -44,10 +46,14 @@ const login = async () => {
         }
       })
     console.log(response.data)
+    localStorage.setItem('access_token', response.data.access_token)
+    router.push('/messenger');
   } catch (err) {
+    console.log(err)
+    let errMes = err.response.data.detail || 'Не получилось авторизоваться.Попробуйте позже'
     ElNotification({
       title: 'Ошибка',
-        message: err.response.data.detail,
+        message: errMes,
         type: 'error',
         position: 'bottom-right'
       })

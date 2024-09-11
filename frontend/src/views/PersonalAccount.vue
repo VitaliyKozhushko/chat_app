@@ -1,11 +1,13 @@
 <template>
   <div class="personal-account-page">
-    <Menu/>
-    <ListItems/>
-    <Dialogs v-if="displayDialog"/>
-    <div v-else class="logo-block">
-      <img class="logo" :src="logo" alt="logo">
-      <p>Chat app - общайся легко &#128521;</p>
+    <div class="messenger">
+      <Menu/>
+      <ListItems/>
+      <Dialogs v-if="displayDialog"/>
+      <div v-else class="logo-block">
+        <img class="logo" :src="logo" alt="logo">
+        <p>Chat app - общайся легко &#128521;</p>
+      </div>
     </div>
   </div>
 </template>
