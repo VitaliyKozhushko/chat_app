@@ -1,5 +1,5 @@
 <template>
-  <div class="signup-block">
+  <div class="signup-block" v-loading="loading">
     <el-input v-model="username" placeholder="username"/>
     <el-input v-model="password" type="password" show-password placeholder="password"/>
     <el-button type="primary" class="login-btn" @click="registration">Зарегистрироваться</el-button>
@@ -13,9 +13,13 @@
 
 <script setup>
 import {defineEmits, ref} from 'vue'
+import axios from "@/axios.js";
+import {ElNotification} from "element-plus";
 
 const username = ref('')
 const password = ref('')
+const loading = ref(false)
+const errorMessage = ref('')
 
 const emit = defineEmits(['toggleAuth'])
 
@@ -23,7 +27,22 @@ const login = (isLogin) => {
   emit('toggleAuth', {isLoginDisplay: isLogin, isRegisterDisplay: false})
 }
 
-const registration = () => {
-  console.log('hello')
+const registration = async () => {
+  try {
+    loading.value = true
+    let data = new FormData()
+    data.set('username', username.value)
+    data.set('password', password.value)
+    const response = await axios.post('/registration', data)
+  } catch (err) {
+    ElNotification({
+      title: 'Ошибка',
+        message: err.response.data.detail,
+        type: 'error',
+        position: 'bottom-right'
+      })
+  } finally {
+    loading.value = false
+  }
 }
 </script>
