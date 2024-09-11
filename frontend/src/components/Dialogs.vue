@@ -22,14 +22,17 @@
         </p>
       </el-card>
     </el-scrollbar>
-    <el-text class="info-text" v-else type="primary" size="large">Выберите комнату или пользователя, чтобы начать общение</el-text>
+    <el-text class="info-text" v-else type="primary" size="large">
+      Выберите комнату в которой состоит пользователь или пользователя, которому хотите написать сообщение, чтобы начать общение
+    </el-text>
   </div>
 </template>
 
 <script setup>
 import {useStore} from 'vuex'
+import {computed} from "vue";
 
 const store = useStore()
 
-const activeChat = store.getters.getActiveChat
+const activeChat = computed(() => store.state.activeChat)
 </script>

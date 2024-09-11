@@ -7,7 +7,7 @@
 </template>
 
 <script setup>
-import ChatsList from "@/components/ListItems/ChatsList.vue"
+import ChatsList from "@/components/ListItems/UsersList.vue"
 import RoomsList from "@/components/ListItems/RoomsList.vue"
 import Notifications from "@/components/ListItems/NotifyList.vue"
 import {useStore} from "vuex"

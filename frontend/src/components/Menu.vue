@@ -5,7 +5,7 @@
     </div>
     <div class="menu-items">
       <el-icon size="24" :class="{'active': actualItemMenu === 'chats'}" @click="() => changeMenuItem('chats')">
-        <ChatRound/>
+        <User/>
       </el-icon>
       <el-icon size="24" :class="{'active': actualItemMenu === 'rooms'}" @click="() => changeMenuItem('rooms')">
         <Files/>
@@ -29,5 +29,6 @@ const actualItemMenu = computed(() => store.state.actualItemMenu)
 
 const changeMenuItem = (newItem) => {
   store.commit('SET_ACTUAL_ITEM_MENU', newItem)
+  store.commit('SET_ACTIVE_CHAT', false)
 }
 </script>

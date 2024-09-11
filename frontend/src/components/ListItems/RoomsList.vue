@@ -1,9 +1,9 @@
 <template>
   <div class="rooms-list">
     <el-button type="primary" class="add-room" :icon="Plus">Создать</el-button>
-    <div v-loading="loading">
+    <div v-loading="loading" class="available-rooms">
       <el-text type="primary" size="large">Доступные комнаты</el-text>
-      <el-scrollbar class="available-rooms">
+      <el-scrollbar>
         <el-card v-for="room in availableRooms" :key="room.id" shadow="hover">
           <p>
             {{ room.name }}
@@ -12,10 +12,10 @@
         </el-card>
       </el-scrollbar>
     </div>
-    <div>
+    <div class="user-rooms">
       <el-text type="primary" size="large">Комнаты пользователя</el-text>
-      <el-scrollbar class="user-rooms">
-        <el-card v-for="room in userRooms" :key="room.id" shadow="hover">
+      <el-scrollbar>
+        <el-card v-for="room in userRooms" :key="room.id" shadow="hover" @click="displayChat(room)">
           <p>
             {{ room.name }}
           </p>
@@ -142,6 +142,10 @@ const leaveRoom = (room) => {
     socket.on('disconnect_room', result_disconnection);
   }
 }
+
+const displayChat = (user) => {
+    store.commit('SET_ACTIVE_CHAT', true)
+  }
 
 onMounted(() => {
   userId.value = localStorage.getItem('userId')

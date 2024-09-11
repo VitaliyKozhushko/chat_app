@@ -48,9 +48,16 @@
     margin: 10px auto;
   }
 
-  .el-scrollbar {
-    height: calc(40vh - 15px);
-    &.user-rooms {
+  .user-rooms,
+  .available-rooms {
+    overflow: hidden;
+    .el-scrollbar {
+      height: calc(40vh - 15px);
+    }
+  }
+
+  .user-rooms {
+    .el-scrollbar {
       height: calc(38vh - 15px);
     }
   }

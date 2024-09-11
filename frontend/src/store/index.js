@@ -13,6 +13,10 @@ export default createStore({
     },
     SET_SOCKET(state, connection) {
       state.socket = connection
+    },
+    SET_ACTIVE_CHAT(state, isActive) {
+      console.log(isActive)
+      state.activeChat = isActive
     }
   },
   actions: {
@@ -28,6 +32,5 @@ export default createStore({
   },
   getters: {
     getSocket: (state) => state.socket,
-    getActiveChat: (state) => state.activeChat,
   }
 })

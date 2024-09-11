@@ -1,7 +1,7 @@
 <template>
   <div v-loading="loading" class="chats-list">
     <el-scrollbar>
-      <el-card v-for="user in usersList" :key="user.id" shadow="hover">
+      <el-card v-for="user in usersList" :key="user.id" shadow="hover" @click="displayChat(user)">
         <div class="user-icon">
           <el-icon>
             <User />
@@ -21,6 +21,9 @@ import '@/assets/scss/listItems.scss'
 import {onMounted, ref} from "vue"
 import axios from "@/axios.js"
 import {ElNotification} from "element-plus"
+import {useStore} from 'vuex'
+
+const store = useStore()
 
 const loading = ref(false)
 const userId = ref(false)
@@ -43,6 +46,10 @@ async function getUsers() {
     loading.value = false
   }
 }
+
+const displayChat = (user) => {
+    store.commit('SET_ACTIVE_CHAT', true)
+  }
 
 onMounted(() => {
   userId.value = localStorage.getItem('userId')
