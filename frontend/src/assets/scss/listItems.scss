@@ -71,6 +71,15 @@
       right: 10px;
     }
   }
+
+  .el-dialog {
+    .el-icon.is-loading {
+      z-index: 1;
+      svg {
+        transform: scale(2.5);
+      }
+    }
+  }
 }
 
 .notify-list {

@@ -66,6 +66,7 @@ async def send_message(sid, data):
   await sio.emit('new_message', response.model_dump_json(), room=room_id)
   print(f"User {username} sent message to room {room_id}")
 
+# удаление пользователя из группы
 @sio.event
 async def disconnect_room(sid, data):
   user_id = data.get('user_id')
@@ -96,7 +97,7 @@ async def disconnect_room(sid, data):
   }, to=sid)
   # await sio.emit('user_left', {'user_id': user_id, 'username': user.username}, room=room_id)
 
-
+# добавление пользователя в группу
 @sio.event
 async def connect_room(sid, data):
   user_id = data.get('user_id')

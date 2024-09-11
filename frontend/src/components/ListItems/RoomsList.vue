@@ -1,6 +1,6 @@
 <template>
   <div class="rooms-list">
-    <el-button type="primary" class="add-room" :icon="Plus">Создать</el-button>
+    <el-button type="primary" class="add-room" :icon="Plus" @click="displayModal = !displayModal">Создать</el-button>
     <div v-loading="loading" class="available-rooms">
       <el-text type="primary" size="large">Доступные комнаты</el-text>
       <el-scrollbar>
@@ -23,6 +23,7 @@
         </el-card>
       </el-scrollbar>
     </div>
+    <RoomCreateDialog v-model:displayModal="displayModal" @update-rooms="updateAvailableRooms"/>
   </div>
 </template>
 
@@ -32,6 +33,7 @@ import axios from "@/axios.js";
 import {ElNotification} from "element-plus"
 import {ref, onMounted} from 'vue'
 import {useStore} from 'vuex'
+import RoomCreateDialog from "@/components/ListItems/RoomCreateDialog.vue"
 
 const store = useStore()
 
@@ -41,6 +43,7 @@ const loading = ref(false)
 const availableRooms = ref([])
 const userRooms = ref([])
 const userId = ref('')
+const displayModal = ref(false)
 
 const displayRooms = (rooms) => {
   rooms.forEach(room => {
@@ -53,6 +56,7 @@ const displayRooms = (rooms) => {
 }
 
 const loadRooms = async () => {
+  console.log('loadRooms')
   try {
     loading.value = true
     const response = await axios.get('/rooms')
@@ -146,6 +150,10 @@ const leaveRoom = (room) => {
 const displayChat = (user) => {
     store.commit('SET_ACTIVE_CHAT', true)
   }
+
+const updateAvailableRooms = (newRoom) => {
+  availableRooms.value.push(newRoom)
+};
 
 onMounted(() => {
   userId.value = localStorage.getItem('userId')
