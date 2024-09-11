@@ -25,7 +25,7 @@ class MessageResponse(MessageBase):
   id: int
   timestamp: datetime
   sender_id: int
-  username: str
+  sender: str
 
   class Config:
     from_attributes = True

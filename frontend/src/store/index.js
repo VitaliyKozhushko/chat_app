@@ -5,7 +5,7 @@ export default createStore({
   state: {
     actualItemMenu: 'chats',
     socket: null,
-    activeChat: false,
+    activeChat: null,
     messages: []
   },
   mutations: {
@@ -15,12 +15,14 @@ export default createStore({
     SET_SOCKET(state, connection) {
       state.socket = connection
     },
-    SET_ACTIVE_CHAT(state, isActive) {
-      console.log(isActive)
-      state.activeChat = isActive
+    SET_ACTIVE_CHAT(state, chatId) {
+      state.activeChat = chatId
     },
     SET_MESSAGES(state, messages) {
-      state.messages = messages;
+      state.messages = messages
+    },
+    UPDATE_MESSAGES(state, message) {
+      state.messages.unshift(message)
     }
   },
   actions: {

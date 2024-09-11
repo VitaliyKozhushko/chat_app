@@ -18,5 +18,5 @@ export function isTokenExpired(token) {
 export function logout() {
   localStorage.removeItem('access_token');
   localStorage.removeItem('userId');
-  store.commit('SET_ACTIVE_CHAT', false)
+  store.commit('SET_ACTIVE_CHAT', null)
 }

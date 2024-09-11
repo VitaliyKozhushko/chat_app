@@ -29,6 +29,6 @@ const actualItemMenu = computed(() => store.state.actualItemMenu)
 
 const changeMenuItem = (newItem) => {
   store.commit('SET_ACTUAL_ITEM_MENU', newItem)
-  store.commit('SET_ACTIVE_CHAT', false)
+  store.commit('SET_ACTIVE_CHAT', null)
 }
 </script>

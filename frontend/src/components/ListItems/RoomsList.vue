@@ -94,7 +94,7 @@ const connectRoom = (room) => {
   if (socket) {
     socket.emit('connect_room', {room_id: room.id, user_id: userId.value})
 
-    const result_connection = (data) => {
+    const resultConnection = (data) => {
       if (data.error) {
         ElNotification({
           title: 'Ошибка',
@@ -111,10 +111,10 @@ const connectRoom = (room) => {
           position: 'bottom-right'
         })
       }
-      socket.off('connect_room_result', result_connection);
+      socket.off('connect_room_result', resultConnection);
     };
 
-    socket.on('connect_room', result_connection);
+    socket.on('connect_room', resultConnection);
   }
 }
 
@@ -149,14 +149,14 @@ const leaveRoom = (room) => {
 const displayChat = async (room) => {
   const accessToken = localStorage.getItem('access_token');
   try {
-    loading.value = true
     const response = await axios.get(`/chat/${room.id}-${userId.value}`, {
       headers: {
         'Authorization': `Bearer ${accessToken}`,
       }
     })
-    console.log(response.data)
-    store.commit('SET_MESSAGES', response.data);
+    const transform_mes = response.data.sort((a, b) => b.id - a.id);
+    store.commit('SET_MESSAGES', transform_mes);
+    socket.emit('join_room', room.id, userId.value);
   } catch (err) {
     let errMes = err.response?.data?.detail || 'Невозможно получить список сообщений для комнаты.Попробуйте позже'
     ElNotification({
@@ -165,10 +165,8 @@ const displayChat = async (room) => {
       type: 'error',
       position: 'bottom-right'
     })
-  } finally {
-    loading.value = false
   }
-  store.commit('SET_ACTIVE_CHAT', true)
+  store.commit('SET_ACTIVE_CHAT', room.id)
 }
 
 const updateAvailableRooms = (newRoom) => {

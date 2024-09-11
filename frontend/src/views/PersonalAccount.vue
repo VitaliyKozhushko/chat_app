@@ -31,7 +31,6 @@ const displayDialog = computed(() => {
 
 onMounted(() => {
   const access_token = localStorage.getItem('access_token');
-
   store.dispatch('initSocket', {access_token, transport: 'websocket'});
 })
 </script>

@@ -48,7 +48,7 @@ async function getUsers() {
 }
 
 const displayChat = (user) => {
-    store.commit('SET_ACTIVE_CHAT', true)
+    store.commit('SET_ACTIVE_CHAT', user.id)
   }
 
 onMounted(() => {
