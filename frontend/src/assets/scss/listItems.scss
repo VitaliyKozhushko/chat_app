@@ -1,4 +1,7 @@
-.chats-list {
+.chats-list,
+.rooms-list {
+  display: flex;
+  flex-direction: column;
   height: calc(90vh - 10px);
   padding: 10px 5px;
   z-index: -1;
@@ -33,5 +36,11 @@
         }
       }
     }
+  }
+}
+
+.rooms-list {
+  .add-room {
+    margin: 10px auto;
   }
 }
