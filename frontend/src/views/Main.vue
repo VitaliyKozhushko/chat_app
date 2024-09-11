@@ -1,7 +1,7 @@
 <template>
   <main>
-    <Auth v-if="!isEnter" @toggleEnter="isEnter = !isEnter"/>
-    <PersonalAccount v-if="isEnter"/>
+    <Auth v-if="!isEnter"/>
+    <PersonalAccount v-else/>
   </main>
 </template>
 
@@ -10,6 +10,6 @@ import Auth from '@/views/Auth.vue'
 import PersonalAccount from "@/views/PersonalAccount.vue"
 import {ref} from 'vue'
 
-const isEnter = ref(true)
+const isEnter = ref(false)
 
 </script>

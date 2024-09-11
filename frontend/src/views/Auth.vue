@@ -10,7 +10,6 @@
     </div>
     <Login v-if="isLoginDisplay" @toggleAuth="changeSign"/>
     <Registration v-if="isRegisterDisplay" @toggleAuth="changeSign"/>
-    <el-button type="primary" link @click="fantomEnter">Лже авторизация</el-button>
   </div>
 </template>
 
@@ -24,12 +23,6 @@ import Registration from '@/components/Registration.vue'
 
 const isLoginDisplay = ref(false)
 const isRegisterDisplay = ref(false)
-
-const emit = defineEmits(['toggleEnter'])
-
-const fantomEnter = () => {
-  emit('toggleEnter')
-}
 
 const changeSign = (data) => {
   isLoginDisplay.value = data.isLoginDisplay

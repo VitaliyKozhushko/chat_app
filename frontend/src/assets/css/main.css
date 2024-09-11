@@ -1,7 +1,17 @@
 @import 'base.css';
 
+body {
+  min-height: unset;
+}
+
 main {
-  width: 100vw
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  width: 100vw;
+  height: 100vh;
+  overflow: hidden;
 }
 
 a,
