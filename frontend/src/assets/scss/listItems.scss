@@ -1,5 +1,6 @@
 .chats-list,
-.rooms-list {
+.rooms-list,
+.notify-list {
   display: flex;
   flex-direction: column;
   height: calc(90vh - 10px);
@@ -42,5 +43,22 @@
 .rooms-list {
   .add-room {
     margin: 10px auto;
+  }
+}
+
+.notify-list {
+  .el-card {
+    .el-icon {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    &:hover {
+      .el-icon {
+        display: block;
+      }
+    }
   }
 }
