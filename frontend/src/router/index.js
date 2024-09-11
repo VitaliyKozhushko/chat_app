@@ -25,10 +25,10 @@ router.beforeEach((to, from, next) => {
 
   if (to.meta.requiresAuth) {
     if (!isAuthenticated()) {
-      next('/login');
+      next('/');
     } else if (isTokenExpired(token)) {
       logout();
-      next('/login');
+      next('/');
     } else {
       next();
     }

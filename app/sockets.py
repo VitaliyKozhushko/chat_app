@@ -75,19 +75,26 @@ async def disconnect_room(sid, data):
 
   room = db.query(Room).filter(Room.id == room_id).first()
   if not room:
-    return {"error": "Room not found"}
+    await sio.emit('disconnect_room', {'error': 'Комната не найдена'}, to=sid)
+    return
 
   user = db.query(User).filter(User.id == user_id).first()
   if not user:
-    return {"error": "User not found"}
+    await sio.emit('disconnect_room', {'error': 'Пользователь не найден'}, to=sid)
+    return
 
   if user in room.users:
     room.users.remove(user)
     db.commit()
 
-  await sio.leave_room(sid, room_id)
+  print(sid)
   print(f"User {user_id} left room {room_id}")
-  await sio.emit('user_left', {'user_id': user_id, 'username': user.username}, room=room_id)
+  await sio.emit('disconnect_room', {
+    'message': f'Пользователь {user_id} удален из комнаты {room_id}',
+    'room_id': room_id,
+    'user_id': user_id
+  }, to=sid)
+  # await sio.emit('user_left', {'user_id': user_id, 'username': user.username}, room=room_id)
 
 
 @sio.event
@@ -99,15 +106,23 @@ async def connect_room(sid, data):
 
   room = db.query(Room).filter(Room.id == room_id).first()
   if not room:
-    return {"error": "Room not found"}
+    await sio.emit('connect_room', {'error': 'Комната не найдена'}, to=sid)
+    return
 
   user = db.query(User).filter(User.id == user_id).first()
   if not user:
-    return {"error": "User not found"}
+    await sio.emit('connect_room', {'error': 'Пользователь не найден'}, to=sid)
+    return
 
   if user not in room.users:
-      room.users.append(user)
-      db.commit()
+    room.users.append(user)
+    db.commit()
+
+  await sio.emit('connect_room', {
+    'message': f'Пользователь {user_id} добавлен в комнату {room_id}',
+    'room_id': room_id,
+    'user_id': user_id
+  }, to=sid)
 
 @sio.event
 async def join_room(sid, room, user_id):

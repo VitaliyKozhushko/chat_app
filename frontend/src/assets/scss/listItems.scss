@@ -49,6 +49,19 @@
 
   .el-scrollbar {
     height: calc(40vh - 15px);
+    &.user-rooms {
+      height: calc(38vh - 15px);
+    }
+  }
+
+  .el-card {
+    position: relative;
+
+    button {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+    }
   }
 }
 
