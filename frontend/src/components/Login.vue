@@ -13,10 +13,10 @@
 </template>
 
 <script setup>
-import { ref, defineEmits } from 'vue'
+import {ref, defineEmits} from 'vue'
 import axios from '@/axios'
-import { ElNotification } from 'element-plus'
-import { useRouter } from 'vue-router'
+import {ElNotification} from 'element-plus'
+import {useRouter} from 'vue-router'
 import {useStore} from 'vuex'
 
 const store = useStore()
@@ -36,26 +36,25 @@ const login = async () => {
   try {
     loading.value = true
     let data = new URLSearchParams({
-        username: username.value,
-        password: password.value,
-      }).toString()
+      username: username.value,
+      password: password.value,
+    }).toString()
     const response = await axios.post('/login', data, {
-        headers: {
-          'Content-Type': 'application/x-www-form-urlencoded',
-        }
-      })
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      }
+    })
     localStorage.setItem('access_token', response.data.access_token)
     localStorage.setItem('userId', response.data.user_id)
     router.push('/messenger');
   } catch (err) {
-    console.log(err)
     let errMes = err.response?.data?.detail || 'Не получилось авторизоваться.Попробуйте позже'
     ElNotification({
       title: 'Ошибка',
-        message: errMes,
-        type: 'error',
-        position: 'bottom-right'
-      })
+      message: errMes,
+      type: 'error',
+      position: 'bottom-right'
+    })
   } finally {
     loading.value = false
   }

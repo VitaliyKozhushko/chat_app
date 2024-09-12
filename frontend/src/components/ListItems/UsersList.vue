@@ -9,16 +9,16 @@
           @click="displayChat(user)">
         <div v-if="notReadPrivateMes[user.id]" class="notify-count">
           <span>
-          {{notReadPrivateMes[user.id]}}
+          {{ notReadPrivateMes[user.id] }}
         </span>
         </div>
         <div class="user-icon">
           <el-icon>
-            <User />
+            <User/>
           </el-icon>
         </div>
         <p>
-          {{user.username}}
+          {{ user.username }}
         </p>
       </el-card>
     </el-scrollbar>
@@ -95,7 +95,7 @@ const displayChat = async (user) => {
       position: 'bottom-right'
     })
   } finally {
-   store.commit('SET_ACTIVE_CHAT', user.id)
+    store.commit('SET_ACTIVE_CHAT', user.id)
     store.commit('REMOVE_NOT_READ_PRIVATE_MES', user.id)
   }
 }

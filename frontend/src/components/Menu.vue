@@ -32,7 +32,7 @@ import exit_icon from '@/assets/icons/logout.png'
 import {computed} from 'vue'
 import {useStore} from 'vuex'
 import {logout} from '@/router/auth.js'
-import { useRouter } from 'vue-router'
+import {useRouter} from 'vue-router'
 import {ElNotification} from "element-plus";
 
 const store = useStore()

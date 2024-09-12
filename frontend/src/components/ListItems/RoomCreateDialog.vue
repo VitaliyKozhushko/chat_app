@@ -1,14 +1,14 @@
 <template>
   <el-dialog
-    :model-value="displayModal"
-    title="Название комнаты"
-    width="500"
-    @close="closeDialog"
+      :model-value="displayModal"
+      title="Название комнаты"
+      width="500"
+      @close="closeDialog"
   >
     <template #default>
       <div v-if="loading" class="loading-overlay is-loading">
         <el-icon class="is-loading">
-          <Loading />
+          <Loading/>
         </el-icon>
       </div>
       <el-input v-model="name" :disabled="loading" placeholder="Название комнаты"/>
@@ -25,9 +25,9 @@
 </template>
 
 <script setup>
-import { ref, defineProps, defineEmits } from 'vue';
+import {ref, defineProps, defineEmits} from 'vue';
 import axios from '@/axios.js';
-import { ElNotification } from 'element-plus';
+import {ElNotification} from 'element-plus';
 
 const props = defineProps({
   displayModal: {

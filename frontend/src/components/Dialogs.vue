@@ -3,14 +3,14 @@
     <div class="dialogs-block" v-if="activeChat">
       <el-scrollbar>
         <el-card
-          v-for="mes in messages"
-          :key="mes.id"
-          class="dialog-card"
-          :class="+userId === +mes.sender_id ? 'right' : 'left'"
+            v-for="mes in messages"
+            :key="mes.id"
+            class="dialog-card"
+            :class="+userId === +mes.sender_id ? 'right' : 'left'"
         >
           <div class="user-icon">
             <el-icon>
-              <User />
+              <User/>
             </el-icon>
           </div>
           <p class="sender">{{ mes.sender }}</p>
@@ -19,11 +19,11 @@
       </el-scrollbar>
       <div class="input-message-block">
         <el-input
-          v-model="message"
-          ref="messageInput"
-          autosize
-          type="textarea"
-          placeholder="Введите сообщение"
+            v-model="message"
+            ref="messageInput"
+            autosize
+            type="textarea"
+            placeholder="Введите сообщение"
         />
         <el-button type="primary" class="login-btn" @click="sendMessage">Отправить</el-button>
       </div>

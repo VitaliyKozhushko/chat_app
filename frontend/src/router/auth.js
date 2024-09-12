@@ -1,4 +1,4 @@
-import { jwtDecode } from "jwt-decode"
+import {jwtDecode} from "jwt-decode"
 import store from '../store'
 
 export function isAuthenticated() {
