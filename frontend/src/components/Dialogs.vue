@@ -92,21 +92,4 @@ const sendMessage = () => {
     });
   }
 };
-
-function updMes(data) {
-  console.log(data);
-  store.commit('UPDATE_MESSAGES', JSON.parse(data));
-}
-
-watch(activeChat, (newActiveChat, oldActiveChat) => {
-  if (newActiveChat !== oldActiveChat) {
-    if (oldActiveChat) {
-      socket.value.off('send_message', updMes);
-    }
-    if (newActiveChat) {
-      socket.value.on('send_message', updMes);
-    }
-    isSocketListener.value = !!newActiveChat;
-  }
-});
 </script>

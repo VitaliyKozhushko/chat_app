@@ -7,6 +7,7 @@ export default createStore({
     socket: null,
     activeChat: null,
     messages: [],
+    privateMessages: []
   },
   mutations: {
     SET_ACTUAL_ITEM_MENU(state, newItem) {
@@ -21,8 +22,12 @@ export default createStore({
     SET_MESSAGES(state, messages) {
       state.messages = messages
     },
-    UPDATE_MESSAGES(state, message) {
-      state.messages.unshift(message)
+    UPDATE_MESSAGES(state, data) {
+      if (data.type === 'message') {
+       state.messages.unshift(data.message)
+      } else {
+        state.privateMessages.unshift(data.message)
+      }
     }
   },
   actions: {
@@ -34,9 +39,13 @@ export default createStore({
       transports: [transport]
       });
       socket.emit('register', userId);
+      socket.on('send_message', (data) => {
+        console.log(data)
+        commit('UPDATE_MESSAGES', {type: 'message', message: JSON.parse(data)})
+      });
       socket.on('private_message', (data) => {
         console.log(data)
-        commit('UPDATE_MESSAGES', data)
+        commit('UPDATE_MESSAGES', {type: 'privateMessages', message: data})
       });
       commit('SET_SOCKET', socket);
     }
