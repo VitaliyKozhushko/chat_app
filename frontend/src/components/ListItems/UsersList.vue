@@ -56,7 +56,7 @@ async function getUsers() {
     ]);
     const users = usersResponse.data;
     const onlineUsers = onlineUsersResponse.data;
-
+    if (Array.isArray(users)) return
     let filterUsers = users.filter(user => user.id !== +userId.value)
     filterUsers.forEach(user => {
       user.isOnline = !!onlineUsers.includes(String(user.id))

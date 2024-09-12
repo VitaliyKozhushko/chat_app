@@ -69,7 +69,7 @@ const loadRooms = async () => {
   try {
     loading.value = true
     const response = await axios.get('/rooms')
-    displayRooms(response.data)
+    if (Array.isArray(response.data)) displayRooms(response.data)
   } catch (err) {
     let errMes = err.response?.data?.detail || 'Невозможно получить список комнат.Попробуйте позже'
     ElNotification({
