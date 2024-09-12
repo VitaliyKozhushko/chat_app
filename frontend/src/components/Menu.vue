@@ -14,7 +14,11 @@
       <el-icon size="24" :class="{'active': actualItemMenu === 'rooms'}" @click="() => changeMenuItem('rooms')">
         <Files/>
       </el-icon>
-      <el-icon size="24" :class="{'active': actualItemMenu === 'notify'}" @click="() => changeMenuItem('notify')">
+      <el-icon
+          size="24"
+          class="notify-btn"
+          :class="{'active': actualItemMenu === 'notify'}"
+          @click="displayNotify">
         <Bell/>
       </el-icon>
     </div>
@@ -29,6 +33,7 @@ import {computed} from 'vue'
 import {useStore} from 'vuex'
 import {logout} from '@/router/auth.js'
 import { useRouter } from 'vue-router'
+import {ElNotification} from "element-plus";
 
 const store = useStore()
 const router = useRouter();
@@ -47,5 +52,13 @@ const handleLogout = () => {
   logout()
   socket.value.disconnect()
   router.push('/')
+}
+
+const displayNotify = () => {
+  ElNotification({
+    message: 'Раздел находится в разработке',
+    type: 'warning',
+    position: 'bottom-right'
+  })
 }
 </script>

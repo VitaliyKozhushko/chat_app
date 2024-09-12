@@ -2,7 +2,7 @@
   <div class="personal-account-page">
     <div class="messenger">
       <Menu/>
-      <ListItems/>
+      <ListItems v-if="actualItemMenu !== 'notify'"/>
       <Dialogs v-if="displayDialog"/>
       <div v-else class="logo-block">
         <img class="logo" :src="logo" alt="logo">
@@ -18,7 +18,7 @@ import Menu from "@/components/Menu.vue"
 import ListItems from '@/components/ListItems/ListItems.vue'
 import Dialogs from "@/components/Dialogs.vue"
 import logo from "@/assets/logo/logo.png"
-import {computed, onMounted, watch} from 'vue'
+import {computed, onMounted,} from 'vue'
 import {useStore} from 'vuex'
 
 const store = useStore()

@@ -49,6 +49,8 @@ const actualItemMenu = computed(() => store.state.actualItemMenu)
 
 watch(actualItemMenu, (newActualItem) => {
   if (newActualItem === 'rooms') {
+    availableRooms.value = []
+  userRooms.value = []
     loadRooms()
   }
 })
