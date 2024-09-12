@@ -1,4 +1,4 @@
-import { createStore } from 'vuex'
+import {createStore} from 'vuex'
 import io from 'socket.io-client'
 import {ElNotification} from 'element-plus';
 
@@ -24,14 +24,14 @@ export default createStore({
     },
     SET_MESSAGES(state, data) {
       if (data.type === 'message') {
-       state.messages = data.messages
+        state.messages = data.messages
       } else {
         state.privateMessages = data.messages
       }
     },
     UPDATE_MESSAGES(state, data) {
       if (data.type === 'message') {
-       state.messages.unshift(data.message)
+        state.messages.unshift(data.message)
       } else {
         state.privateMessages.unshift(data.message)
       }
@@ -40,7 +40,7 @@ export default createStore({
       if (!state.notReadPrivateMes[userId]) {
         state.notReadPrivateMes[userId] = 1
       } else {
-       state.notReadPrivateMes[userId] = state.notReadPrivateMes[userId] + 1
+        state.notReadPrivateMes[userId] = state.notReadPrivateMes[userId] + 1
       }
     },
     REMOVE_NOT_READ_PRIVATE_MES(state, userId) {
@@ -51,12 +51,12 @@ export default createStore({
     }
   },
   actions: {
-    initSocket({ commit, state }, {access_token, transport, userId}) {
+    initSocket({commit, state}, {access_token, transport, userId}) {
       const socket = io("http://localhost:8000/", {
-      query: {
-        auth_token: access_token
-      },
-      transports: [transport]
+        query: {
+          auth_token: access_token
+        },
+        transports: [transport]
       });
       socket.emit('register', userId);
       socket.on('send_message', (data) => {
@@ -64,8 +64,6 @@ export default createStore({
       });
       socket.on('private_message', (data) => {
         const userId = localStorage.getItem('userId')
-        console.log('userId:', userId)
-        console.log('data:', data)
         if (!data.to_sender && (state.actualItemMenu !== 'chats' || state.activeChat !== +data.sender_id)) {
           commit('SET_NOT_READ_PRIVATE_MES', data.sender_id)
           ElNotification({

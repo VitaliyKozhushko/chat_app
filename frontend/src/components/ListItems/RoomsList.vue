@@ -50,7 +50,7 @@ const actualItemMenu = computed(() => store.state.actualItemMenu)
 watch(actualItemMenu, (newActualItem) => {
   if (newActualItem === 'rooms') {
     availableRooms.value = []
-  userRooms.value = []
+    userRooms.value = []
     loadRooms()
   }
 })
@@ -69,7 +69,7 @@ const loadRooms = async () => {
   try {
     loading.value = true
     const response = await axios.get('/rooms')
-    displayRooms(response.data)
+    if (Array.isArray(response.data)) displayRooms(response.data)
   } catch (err) {
     let errMes = err.response?.data?.detail || 'Невозможно получить список комнат.Попробуйте позже'
     ElNotification({
@@ -177,7 +177,7 @@ const displayChat = async (room) => {
       position: 'bottom-right'
     })
   } finally {
-   store.commit('SET_ACTIVE_CHAT', room.id)
+    store.commit('SET_ACTIVE_CHAT', room.id)
   }
 }
 

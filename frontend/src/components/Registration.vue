@@ -19,7 +19,6 @@ import {ElNotification} from "element-plus";
 const username = ref('')
 const password = ref('')
 const loading = ref(false)
-const errorMessage = ref('')
 
 const emit = defineEmits(['toggleAuth'])
 
@@ -34,13 +33,20 @@ const registration = async () => {
     data.set('username', username.value)
     data.set('password', password.value)
     const response = await axios.post('/registration', data)
+    ElNotification({
+      title: 'Успех',
+      message: `Пользователь ${response.data.username} зарегистрирован`,
+      type: 'success',
+      position: 'bottom-right'
+    })
+    login(true)
   } catch (err) {
     ElNotification({
       title: 'Ошибка',
-        message: err.response.data.detail,
-        type: 'error',
-        position: 'bottom-right'
-      })
+      message: err.response.data.detail,
+      type: 'error',
+      position: 'bottom-right'
+    })
   } finally {
     loading.value = false
   }

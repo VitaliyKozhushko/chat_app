@@ -1,7 +1,7 @@
-import { createRouter, createWebHistory } from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
 import Main from "@/views/Main.vue"
 import PersonalAccount from "@/views/PersonalAccount.vue"
-import { isAuthenticated, isTokenExpired, logout } from "./auth.js"
+import {isAuthenticated, isTokenExpired, logout} from "./auth.js"
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -15,7 +15,7 @@ const router = createRouter({
       path: '/messenger',
       name: 'messenger',
       component: PersonalAccount,
-      meta: { requiresAuth: true }
+      meta: {requiresAuth: true}
     }
   ]
 })
