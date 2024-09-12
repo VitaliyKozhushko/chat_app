@@ -7,6 +7,11 @@
           :class="{'online' : user.isOnline}"
           shadow="hover"
           @click="displayChat(user)">
+        <div v-if="notReadPrivateMes[user.id]" class="notify-count">
+          <span>
+          {{notReadPrivateMes[user.id]}}
+        </span>
+        </div>
         <div class="user-icon">
           <el-icon>
             <User />
@@ -34,6 +39,7 @@ const loading = ref(false)
 const userId = ref(false)
 const usersList = ref([])
 const actualItemMenu = computed(() => store.state.actualItemMenu)
+const notReadPrivateMes = computed(() => store.state.notReadPrivateMes)
 
 watch(actualItemMenu, (newActualItem) => {
   if (newActualItem === 'chats') {
@@ -90,6 +96,7 @@ const displayChat = async (user) => {
     })
   } finally {
    store.commit('SET_ACTIVE_CHAT', user.id)
+    store.commit('REMOVE_NOT_READ_PRIVATE_MES', user.id)
   }
 }
 

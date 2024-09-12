@@ -177,6 +177,7 @@ async def private_message(sid, data):
       'id': now,
       'sender': users[from_user_id]['sender'],
       'sender_id': from_user_id,
+      'to_sender': True,
       'content': message}, room=from_sid)
 
     if to_user_id in users and users[to_user_id]['online']:

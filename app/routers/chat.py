@@ -100,7 +100,7 @@ def get_private_messages_between_users(
   if current_user.id != sender_id and current_user.id != recipient_id:
     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Доступ запрещён")
 
-  messages = (db.query(PrivateMessage).options(joinedload(PrivateMessage.sender))
+  messages = (db.query(PrivateMessage).options(joinedload(PrivateMessage.sender), joinedload(PrivateMessage.recipient))
               .filter(
                       ((PrivateMessage.sender_id == sender_id) & (PrivateMessage.recipient_id == recipient_id)) |
                       ((PrivateMessage.sender_id == recipient_id) & (PrivateMessage.recipient_id == sender_id)))
@@ -112,7 +112,9 @@ def get_private_messages_between_users(
       content=message.content,
       timestamp=message.timestamp,
       sender_id=message.sender_id,
-      sender=message.sender.username
+      sender=message.sender.username,
+      recipient_id=message.recipient_id,
+      recipient=message.recipient.username
     )
     for message in messages
   ]

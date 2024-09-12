@@ -41,6 +41,8 @@ class PrivateMessageResponse(BaseModel):
   timestamp: datetime
   sender_id: int
   sender: str
+  recipient_id: int
+  recipient: str
 
   class Config:
     from_attributes = True

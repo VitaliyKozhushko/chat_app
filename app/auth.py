@@ -61,7 +61,7 @@ def create_refresh_token(data: dict):
 def get_current_user(db: Session = Depends(database.get_session_db), token: str = Depends(oauth2_scheme)):
   credintial_exception = HTTPException(
     status_code=status.HTTP_401_UNAUTHORIZED,
-    detail='Не удалось проверить учетные данные',
+    detail='Необходимо повторно зайти в ЛК',
     headers={'WWW-Authenticate': 'Bearer'}
   )
 
