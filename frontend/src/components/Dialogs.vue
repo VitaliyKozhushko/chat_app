@@ -36,15 +36,14 @@
 
 <script setup>
 import {useStore} from 'vuex';
-import {computed, ref, watch} from 'vue';
+import {computed, ref} from 'vue';
 import {ElNotification} from 'element-plus';
 
 const store = useStore();
 const socket = computed(() => store.getters.getSocket);
 const activeChat = computed(() => store.state.activeChat);
-const messages = computed(() => store.state.messages);
+const messages = computed(() => actualItemMenu.value === 'chats' ? store.state.privateMessages : store.state.messages);
 const userId = localStorage.getItem('userId');
-const isSocketListener = ref(false);
 const actualItemMenu = computed(() => store.state.actualItemMenu);
 
 const message = ref('');
@@ -52,8 +51,6 @@ const messageInput = ref(null);
 
 function sendMesToUser() {
   if (socket.value && message.value.trim() !== '') {
-    console.log(activeChat.value)
-    console.log(message.value)
     socket.value.emit('private_message', {
       to: activeChat.value,
       from: userId,

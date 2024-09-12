@@ -51,8 +51,6 @@ async function getUsers() {
     const users = usersResponse.data;
     const onlineUsers = onlineUsersResponse.data;
 
-    console.log('Users:', users);
-    console.log('Online Users:', onlineUsers);
     let filterUsers = users.filter(user => user.id !== +userId.value)
     filterUsers.forEach(user => {
       user.isOnline = !!onlineUsers.includes(String(user.id))
@@ -71,9 +69,29 @@ async function getUsers() {
   }
 }
 
-const displayChat = (user) => {
-    store.commit('SET_ACTIVE_CHAT', user.id)
+const displayChat = async (user) => {
+  const accessToken = localStorage.getItem('access_token');
+  const senderId = localStorage.getItem('userId');
+  try {
+    const response = await axios.get(`/private_messages/${senderId}-${user.id}`, {
+      headers: {
+        'Authorization': `Bearer ${accessToken}`,
+      }
+    })
+    const transform_mes = response.data.sort((a, b) => b.id - a.id);
+    store.commit('SET_MESSAGES', {type: 'privateMessages', messages: transform_mes});
+  } catch (err) {
+    let errMes = err.response?.data?.detail || 'Невозможно получить список сообщений для комнаты.Попробуйте позже'
+    ElNotification({
+      title: 'Ошибка',
+      message: errMes,
+      type: 'error',
+      position: 'bottom-right'
+    })
+  } finally {
+   store.commit('SET_ACTIVE_CHAT', user.id)
   }
+}
 
 onMounted(() => {
   userId.value = localStorage.getItem('userId')

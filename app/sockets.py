@@ -5,7 +5,7 @@ from .database import get_session_db
 from .crud import create_message
 from .auth import verify_token
 from .schemas import MessageCreate, MessageResponse
-from .models import Room, User
+from .models import Room, User, PrivateMessage
 from datetime import datetime
 
 sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins='*')
@@ -162,16 +162,27 @@ async def private_message(sid, data):
     from_user_id = str(data['from'])
     message = data['message']
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    db: Session = next(get_session_db())
+    new_message = PrivateMessage(
+      content=message,
+      sender_id=int(from_user_id),
+      recipient_id=int(to_user_id)
+    )
+    db.add(new_message)
+    db.commit()
+    print('Сообщение сохранено')
+    from_sid = users[from_user_id]['sid']
+    await sio.emit('private_message', {
+      'id': now,
+      'sender': users[from_user_id]['sender'],
+      'sender_id': from_user_id,
+      'content': message}, room=from_sid)
+
     if to_user_id in users and users[to_user_id]['online']:
         to_sid = users[to_user_id]['sid']
-        from_sid = users[from_user_id]['sid']
         await sio.emit('private_message', {
           'id': now,
           'sender': users[from_user_id]['sender'],
           'sender_id': from_user_id,
           'content': message}, room=to_sid)
-        await sio.emit('private_message', {
-          'id': now,
-          'sender': users[from_user_id]['sender'],
-          'sender_id': from_user_id,
-          'content': message}, room=from_sid)

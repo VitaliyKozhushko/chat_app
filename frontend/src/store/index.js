@@ -19,8 +19,12 @@ export default createStore({
     SET_ACTIVE_CHAT(state, chatId) {
       state.activeChat = chatId
     },
-    SET_MESSAGES(state, messages) {
-      state.messages = messages
+    SET_MESSAGES(state, data) {
+      if (data.type === 'message') {
+       state.messages = data.messages
+      } else {
+        state.privateMessages = data.messages
+      }
     },
     UPDATE_MESSAGES(state, data) {
       if (data.type === 'message') {

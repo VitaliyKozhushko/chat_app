@@ -163,7 +163,7 @@ const displayChat = async (room) => {
       }
     })
     const transform_mes = response.data.sort((a, b) => b.id - a.id);
-    store.commit('SET_MESSAGES', transform_mes);
+    store.commit('SET_MESSAGES', {type: 'message', messages: transform_mes});
     if (activeChat.value) socket.emit('leave_room', room.id, userId.value);
     socket.emit('join_room', room.id, userId.value);
   } catch (err) {
@@ -174,8 +174,9 @@ const displayChat = async (room) => {
       type: 'error',
       position: 'bottom-right'
     })
+  } finally {
+   store.commit('SET_ACTIVE_CHAT', room.id)
   }
-  store.commit('SET_ACTIVE_CHAT', room.id)
 }
 
 const updateAvailableRooms = (newRoom) => {

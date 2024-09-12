@@ -30,6 +30,21 @@ class MessageResponse(MessageBase):
   class Config:
     from_attributes = True
 
+class PrivateMessageCreate(BaseModel):
+    recipient_id: int
+    content: str
+
+
+class PrivateMessageResponse(BaseModel):
+  id: int
+  content: str
+  timestamp: datetime
+  sender_id: int
+  sender: str
+
+  class Config:
+    from_attributes = True
+
 class Token(BaseModel):
   access_token: str
   refresh_token: str
