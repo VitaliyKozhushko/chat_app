@@ -18,10 +18,21 @@ class Room(Base):
   name = Column(String, unique=True, index=True)
   created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
-  # Определяем отношение многие-ко-многим через таблицу room_users
   users = relationship('User', secondary=room_users, back_populates='rooms')
   messages = relationship('Message', back_populates='room')
 
+class PrivateMessage(Base):
+  __tablename__ = 'private_messages'
+
+  id = Column(Integer, primary_key=True, index=True)
+  content = Column(String, nullable=False)
+  timestamp = Column(DateTime, default=lambda: datetime.now(timezone.utc))
+
+  sender_id = Column(Integer, ForeignKey('users.id'))
+  recipient_id = Column(Integer, ForeignKey('users.id'))
+
+  sender = relationship('User', foreign_keys=[sender_id], back_populates='sent_messages')
+  recipient = relationship('User', foreign_keys=[recipient_id], back_populates='received_messages')
 
 class User(Base):
   __tablename__ = 'users'
@@ -33,6 +44,10 @@ class User(Base):
   rooms = relationship('Room', secondary=room_users, back_populates='users')
 
   messages = relationship('Message', back_populates='sender')
+
+  sent_messages = relationship('PrivateMessage', foreign_keys=[PrivateMessage.sender_id], back_populates='sender')
+  received_messages = relationship('PrivateMessage', foreign_keys=[PrivateMessage.recipient_id],
+                                   back_populates='recipient')
 
 class Message(Base):
   __tablename__ = 'messages'

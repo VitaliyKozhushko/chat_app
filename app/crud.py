@@ -4,6 +4,14 @@ from passlib.context import CryptContext
 
 passwd_context = CryptContext(schemes=['bcrypt'], deprecated='auto')
 
+def get_all_users(db: Session, skip: int = 0, limit: int = 10):
+  return (
+    db.query(models.User)
+    .offset(skip)
+    .limit(limit)
+    .all()
+  )
+
 def get_user(db: Session, user_id: int):
   return db.query(models.User).filter(models.User.id == user_id).first()
 

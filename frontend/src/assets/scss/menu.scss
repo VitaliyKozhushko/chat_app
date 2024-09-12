@@ -1,12 +1,25 @@
 .menu {
   .logo-mini {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
     width: 56px;
-    height: 56px;
+    height: auto;
     margin: 10px auto 0;
+    gap: 20px;
 
     img {
       width: inherit;
-      height: inherit;
+      height: 56px;
+    }
+    .exit-icon {
+      position: relative;
+      width: 24px;
+      height: 24px;
+      left: -5px;
+      &:hover {
+        cursor: pointer;
+      }
     }
   }
 
@@ -31,6 +44,16 @@
       background: #cde9ff;
       color: #058fff;
       cursor: pointer;
+    }
+    &.hasMes:before {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      right: 10px;
+      top: 10px;
+      border-radius: 50%;
+      background: #409eff;
     }
   }
 }

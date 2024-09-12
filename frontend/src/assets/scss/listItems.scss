@@ -7,8 +7,10 @@
   height: calc(90vh - 10px);
   padding: 10px 5px;
   z-index: -1;
+  overflow: hidden;
 
   .el-scrollbar {
+    width: 100%;
     height: calc(90vh - 15px);
 
     .el-card {
@@ -47,8 +49,37 @@
     margin: 10px auto;
   }
 
-  .el-scrollbar {
-    height: calc(40vh - 15px);
+  .user-rooms,
+  .available-rooms {
+    overflow: hidden;
+    .el-scrollbar {
+      height: calc(40vh - 15px);
+    }
+  }
+
+  .user-rooms {
+    .el-scrollbar {
+      height: calc(38vh - 15px);
+    }
+  }
+
+  .el-card {
+    position: relative;
+
+    button {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+    }
+  }
+
+  .el-dialog {
+    .el-icon.is-loading {
+      z-index: 1;
+      svg {
+        transform: scale(2.5);
+      }
+    }
   }
 }
 
@@ -70,23 +101,98 @@
 }
 
 .dialogs {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: auto;
+
+  .dialogs-block {
+    width: 100%;
+    height: 100%;
+    position: relative;
+
+    .input-message-block {
+      display: flex;
+      flex-wrap: nowrap;
+      position: absolute;
+      bottom: -20px;
+      left: -10px;
+      padding-left: 10px;
+      padding-bottom: 20px;
+      max-height: 500px;
+      width: 500px;
+      align-items: flex-end;
+      background: white;
+      .el-textarea {
+        width: 365px;
+      }
+    }
+  }
+
+  .info-text {
+    width: 65%;
+    text-align: center;
+  }
+
+  .el-scrollbar__view {
+    display: flex;
+    flex-direction: column;
+  }
+
   .dialog-card {
-    width: 50%;
+    width: 70%;
     border-radius: 20px;
     p {
       word-break: break-all;
     }
+    .sender {
+      font-weight: bold;
+    }
+    .message {
+      width: 63%;
+    }
     &.right {
-      float: right;
+      align-self: flex-end;
       .el-card__body {
         justify-content: flex-end;
         .user-icon{
+          order: 3
+        }
+        .sender {
           order: 2
         }
-        p {
+        .message {
           order: 1
         }
       }
+    }
+  }
+}
+
+.chats-list {
+  .el-card {
+    &.online:before {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 10px;
+      right: 10px;
+      top: 10px;
+      border-radius: 50%;
+      background: green;
+    }
+    .notify-count {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      position: absolute;
+      top: 25px;
+      right: 5px;
+      width: 20px;
+      height: 20px;
+      border-radius: 50%;
+      background: #cde9ff;
     }
   }
 }

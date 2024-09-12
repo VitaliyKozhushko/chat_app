@@ -25,7 +25,24 @@ class MessageResponse(MessageBase):
   id: int
   timestamp: datetime
   sender_id: int
-  username: str
+  sender: str
+
+  class Config:
+    from_attributes = True
+
+class PrivateMessageCreate(BaseModel):
+    recipient_id: int
+    content: str
+
+
+class PrivateMessageResponse(BaseModel):
+  id: int
+  content: str
+  timestamp: datetime
+  sender_id: int
+  sender: str
+  recipient_id: int
+  recipient: str
 
   class Config:
     from_attributes = True

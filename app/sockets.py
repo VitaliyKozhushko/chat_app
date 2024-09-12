@@ -5,7 +5,8 @@ from .database import get_session_db
 from .crud import create_message
 from .auth import verify_token
 from .schemas import MessageCreate, MessageResponse
-from .models import Room, User
+from .models import Room, User, PrivateMessage
+from datetime import datetime
 
 sio = socketio.AsyncServer(async_mode='asgi', cors_allowed_origins='*')
 
@@ -40,6 +41,7 @@ async def disconnect(sid):
       print(f"Пользователь {user_id} отключен")
       break
 
+# отправка сообщения в комнате
 @sio.event
 async def send_message(sid, data):
   session = await sio.get_session(sid)
@@ -61,11 +63,12 @@ async def send_message(sid, data):
     content=message.content,
     timestamp=message.timestamp,
     sender_id=message.sender_id,
-    username=username
+    sender=username
   )
-  await sio.emit('new_message', response.model_dump_json(), room=room_id)
+  await sio.emit('send_message', response.model_dump_json(), room=room_id)
   print(f"User {username} sent message to room {room_id}")
 
+# удаление пользователя из комнаты
 @sio.event
 async def disconnect_room(sid, data):
   user_id = data.get('user_id')
@@ -75,21 +78,28 @@ async def disconnect_room(sid, data):
 
   room = db.query(Room).filter(Room.id == room_id).first()
   if not room:
-    return {"error": "Room not found"}
+    await sio.emit('disconnect_room', {'error': 'Комната не найдена'}, to=sid)
+    return
 
   user = db.query(User).filter(User.id == user_id).first()
   if not user:
-    return {"error": "User not found"}
+    await sio.emit('disconnect_room', {'error': 'Пользователь не найден'}, to=sid)
+    return
 
   if user in room.users:
     room.users.remove(user)
     db.commit()
 
-  await sio.leave_room(sid, room_id)
+  print(sid)
   print(f"User {user_id} left room {room_id}")
-  await sio.emit('user_left', {'user_id': user_id, 'username': user.username}, room=room_id)
+  await sio.emit('disconnect_room', {
+    'message': f'Пользователь {user_id} удален из комнаты {room_id}',
+    'room_id': room_id,
+    'user_id': user_id
+  }, to=sid)
+  # await sio.emit('user_left', {'user_id': user_id, 'username': user.username}, room=room_id)
 
-
+# добавление пользователя в комнату
 @sio.event
 async def connect_room(sid, data):
   user_id = data.get('user_id')
@@ -99,16 +109,25 @@ async def connect_room(sid, data):
 
   room = db.query(Room).filter(Room.id == room_id).first()
   if not room:
-    return {"error": "Room not found"}
+    await sio.emit('connect_room', {'error': 'Комната не найдена'}, to=sid)
+    return
 
   user = db.query(User).filter(User.id == user_id).first()
   if not user:
-    return {"error": "User not found"}
+    await sio.emit('connect_room', {'error': 'Пользователь не найден'}, to=sid)
+    return
 
   if user not in room.users:
-      room.users.append(user)
-      db.commit()
+    room.users.append(user)
+    db.commit()
 
+  await sio.emit('connect_room', {
+    'message': f'Пользователь {user_id} добавлен в комнату {room_id}',
+    'room_id': room_id,
+    'user_id': user_id
+  }, to=sid)
+
+# вход пользователя в комнату
 @sio.event
 async def join_room(sid, room, user_id):
     db: Session = next(get_session_db())
@@ -121,19 +140,50 @@ async def join_room(sid, room, user_id):
     )
     print(f"Client {sid} joined room {room}")
 
+# выход пользователя из комнаты
 @sio.event
-async def register(sid, data):
-    user_id = data['userId']
-    users[user_id] = {'sid': sid, 'online': True}
-    print(f"Пользователь {user_id} зарегистрирован с id {sid}")
+async def leave_room(sid, room, user_id):
+  db: Session = next(get_session_db())
+  user = db.query(User).filter(User.id == user_id).first()
+  await sio.leave_room(sid, room)
+  await sio.emit('user_left', {'user_id': user_id, 'username': user.username}, room=room)
+
+@sio.event
+async def register(sid, user_id):
+    db: Session = next(get_session_db())
+    user = db.query(User).filter(User.id == user_id).first()
+    users[user_id] = {'sid': sid, 'online': True, 'sender': user.username}
+    print(f"Пользователь {user_id} зарегистрирован с sid {sid}")
+    await sio.emit('register', {'user_id': user_id}, to=sid)
 
 @sio.event
 async def private_message(sid, data):
-    to_user_id = data['to']
+    to_user_id = str(data['to'])
+    from_user_id = str(data['from'])
     message = data['message']
+    now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
+
+    db: Session = next(get_session_db())
+    new_message = PrivateMessage(
+      content=message,
+      sender_id=int(from_user_id),
+      recipient_id=int(to_user_id)
+    )
+    db.add(new_message)
+    db.commit()
+    print('Сообщение сохранено')
+    from_sid = users[from_user_id]['sid']
+    await sio.emit('private_message', {
+      'id': now,
+      'sender': users[from_user_id]['sender'],
+      'sender_id': from_user_id,
+      'to_sender': True,
+      'content': message}, room=from_sid)
 
     if to_user_id in users and users[to_user_id]['online']:
         to_sid = users[to_user_id]['sid']
-        await sio.emit('private_message', {'from': sid, 'message': message}, room=to_sid)
-    else:
-        await sio.emit('error', {'message': 'User not found or offline'}, room=sid)
+        await sio.emit('private_message', {
+          'id': now,
+          'sender': users[from_user_id]['sender'],
+          'sender_id': from_user_id,
+          'content': message}, room=to_sid)
