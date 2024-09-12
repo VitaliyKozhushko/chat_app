@@ -24,7 +24,6 @@
           autosize
           type="textarea"
           placeholder="Введите сообщение"
-          @keyup.enter="sendMessage"
         />
         <el-button type="primary" class="login-btn" @click="sendMessage">Отправить</el-button>
       </div>
